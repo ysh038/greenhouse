@@ -1,0 +1,25 @@
+.helpAnchor {
+    position: relative;
+}
+
+.helpPopover {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1;
+    width: 240px;
+    padding: var(--gh-space-sm);
+    border: 1px solid var(--gh-color-border);
+    border-radius: var(--gh-radius-md);
+    background: var(--gh-color-surface);
+}
+
+.meter {
+    height: var(--gh-space-sm);
+    border-radius: var(--gh-radius-sm);
+    background: var(--gh-color-primary);
+}
+
+.meter[data-full='true'] {
+    background: var(--gh-color-danger);
+}

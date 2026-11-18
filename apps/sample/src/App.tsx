@@ -2,6 +2,7 @@ import { Page } from '@agent-greenhouse/framework/ui'
 
 import { MenuDemo } from './demo/MenuDemo'
 import { SearchDemo } from './demo/SearchDemo'
+import { InvitePanel } from './invites/InvitePanel'
 import { NoticeBoard } from './notices/NoticeBoard'
 import { TodoDemo } from './todos/TodoDemo'
 import { UsersSection } from './users/UsersSection'
@@ -14,6 +15,7 @@ export function App() {
             <TodoDemo />
             <UsersSection />
             <NoticeBoard />
+            <InvitePanel />
         </Page>
     )
 }
