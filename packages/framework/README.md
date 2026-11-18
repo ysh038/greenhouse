@@ -12,9 +12,12 @@ src/<모듈>/
   *.module.css      스타일 (UI 모듈). 값은 tokens.css의 변수만 씁니다.
   *.test.ts(x)      테스트
   lint.mjs          제품 코드에 적용할 금지 규칙 (선택)
+  cssLint.mjs       제품 CSS에 적용할 stylelint 규칙 (UI 모듈만. 루트의 stylelint.config.mjs가 가져갑니다)
   fixtures/         위반 예제 (lint.mjs가 있으면 필수)
     *.bad.ts(x)     걸려야 하는 코드
     *.good.ts(x)    통과해야 하는 코드
+    *.bad.css       걸려야 하는 CSS
+    *.good.css      통과해야 하는 CSS
 ```
 
 `src/assert`가 가장 작은 예입니다.
@@ -51,6 +54,15 @@ export default {
 ```ts
 // expect: no-restricted-imports
 import axios from 'axios'
+```
+
+CSS 예제는 주석 모양만 다릅니다.
+
+```css
+/* expect: color-no-hex */
+.badge {
+    color: #b3261e;
+}
 ```
 
 `*.good.*` 파일은 아무 규칙에도 걸리지 않아야 합니다. `fixtures/` 안의 파일은 제품 코드와 같은 규칙으로 검사됩니다.

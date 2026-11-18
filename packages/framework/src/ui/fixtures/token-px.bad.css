@@ -1,0 +1,5 @@
+/* expect: declaration-property-value-disallowed-list */
+.meter {
+    height: 8px;
+    margin: 0 16px;
+}

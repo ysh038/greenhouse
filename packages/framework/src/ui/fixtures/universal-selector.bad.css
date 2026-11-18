@@ -1,0 +1,4 @@
+/* expect: selector-max-universal */
+.memberRow > * {
+    width: 100%;
+}
