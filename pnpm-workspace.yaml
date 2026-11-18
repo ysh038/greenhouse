@@ -1,0 +1,7 @@
+packages:
+  - apps/*
+  - packages/*
+
+peerDependencyRules:
+  allowedVersions:
+    eslint-plugin-react>eslint: '10'

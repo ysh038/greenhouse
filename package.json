@@ -1,0 +1,30 @@
+{
+  "name": "agent-greenhouse",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "peers": "pnpm peers check",
+    "typecheck": "tsc -b",
+    "lint": "eslint . --ignore-pattern '**/fixtures/**' --max-warnings 0",
+    "lint:fixtures": "node lint/check-fixtures.mjs",
+    "test": "vitest run",
+    "build": "pnpm --filter @agent-greenhouse/sample build",
+    "deps:update": "node scripts/update-deps.mjs"
+  },
+  "devDependencies": {
+    "@agent-greenhouse/framework": "workspace:*",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.3.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "react": "^19.3.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.0"
+  }
+}
