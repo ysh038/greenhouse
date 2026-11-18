@@ -24,7 +24,7 @@
 | `apps/sample` | 제품 구역. 프레임워크를 `@agent-greenhouse/framework/<모듈>`로만 가져옵니다 |
 | `lint` | 모든 코드에 적용하는 규칙, 모듈 규칙 수집기, 위반 예제 검사기 |
 | `tools/measure` | 기존 프로젝트에 후보 규칙을 경고로 돌려 보는 측정 도구 |
-| `docs` | [규칙 후보 카탈로그](docs/fe-rule-catalog.md), [측정 결과](docs/measurement-2026-11-18.md) |
+| `docs` | [규칙 후보 카탈로그](docs/fe-rule-catalog.md), [측정 결과](docs/measurement-2026-11-18.md), [실전 시험 1회](docs/trial-1-2026-11-18.md), [2회](docs/trial-2-2026-11-18.md) |
 
 ## 시작하기
 
@@ -50,17 +50,18 @@ pnpm deps:update
 |---|---|---|
 | 0. 결정 | 규칙 후보 카탈로그 작성, 팀 코드에 돌려 채택 여부 판정 | 완료 |
 | 1. 뼈대 | 모노레포, 구역 분리, 규칙 자동 수집, `pnpm check` | 완료 |
-| 2. 기능 모듈 | 모듈마다 API + 금지 규칙 + 위반 예제 + 테스트 | 다음 차례 |
+| 2. 기능 모듈 | 모듈마다 API + 금지 규칙 + 위반 예제 + 테스트 | Effect, 데이터 모듈 완료. UI, 구조 모듈은 시작 전 |
 | 3. 검증 도구 | 에이전트가 샘플 앱을 띄우고 스크린샷을 증거로 남기는 CLI | 시작 전 |
-| 4. 실전 시험 | 맥락 없는 새 에이전트 세션에 프레임워크만 주고 기능을 구현시킴 | 시작 전 |
-| 5. 반복 | 실전 시험에서 교정한 것을 규칙이나 API로 옮기고 다시 시험 | 시작 전 |
+| 4. 실전 시험 | 맥락 없는 새 에이전트 세션에 프레임워크만 주고 기능을 구현시킴 | 2회 완료. 1회차는 새 기능 구현(교정 0건), 2회차는 린트 메시지만으로 기존 코드 고치기(교정 1건) |
+| 5. 반복 | 실전 시험에서 교정한 것을 규칙이나 API로 옮기고 다시 시험 | 1회차 개선 8개 중 7개, 2회차 메시지 개선 3개 반영 |
 
 ### 2단계 모듈 후보
 
 측정 결과에서 근거가 많은 순서입니다.
 
-- **Effect 모듈**: `useEventListener`, `useClickOutside`, `useKeydown`, `useDebounce`, `useAnimationFrame`. 제품 코드에서 `useEffect`, 타이머, `addEventListener`를 금지합니다.
-- **데이터 모듈**: `apiClient`, 응답 스키마 검증, 쿼리와 변경 정의. 제품 코드에서 `axios`, `fetch`, `useQuery`, `useMutation` 직접 사용을 금지합니다.
+- **Effect 모듈 (완료)**: `useEventListener`, `useClickOutside`, `useKeydown`, `useTimeout`, `useInterval`, `useDebouncedValue`, `useAnimationFrame`. 제품 코드에서 `useEffect`, 타이머, `addEventListener`를 금지합니다. 크기 측정이나 스크롤 맞추기처럼 아직 훅이 없는 용도는 실전 시험에서 필요가 확인되면 추가합니다.
+- **데이터 모듈 (완료)**: `createApiClient`(응답 스키마 필수), `defineQuery`와 `useData`, `defineMutation`과 `useMutate`, `DataBoundary`, `DataProvider`. 제품 코드에서 `axios`, `fetch`, `@tanstack/react-query` 직접 사용을 금지합니다. 검색처럼 인자가 자주 바뀌는 조회는 `useDeferredData`를 씁니다. 조건부 조회, 무한 스크롤, 낙관적 갱신은 아직 없고 실전 시험에서 필요가 확인되면 추가합니다.
+- **가짜 서버와 테스트 도우미 (완료)**: `fake-api`의 `createFakeApi`(지연, 한 번 실패, 요청 기록)와 `testing`의 `renderWithData`, `advanceTime`. 실전 시험에서 에이전트가 직접 만들어 쓰던 것을 프레임워크로 옮겼습니다.
 - **UI 모듈**: 디자인 토큰, 기본 컴포넌트. 생 `<button>`과 고정 값 인라인 스타일을 금지합니다.
 - **구조 모듈**: 기능 폴더 규칙과 폴더 간 import 금지.
 
@@ -75,4 +76,7 @@ pnpm deps:update
 
 - TypeScript는 6.0에 머뭅니다. 7.0이 나와 있지만 typescript-eslint 8.73이 6.1 미만만 지원합니다. 지원이 추가되면 `pnpm deps:update`가 올립니다.
 - `eslint-plugin-react` 7.37은 ESLint 10을 공식 지원 범위에 넣지 않았지만 동작합니다. `pnpm-workspace.yaml`에서 예외로 허용했고, 이 플러그인의 규칙은 위반 예제로 동작을 확인합니다.
-- React Router, TanStack Query, React Compiler, CSS 규칙, 컴포넌트 테스트 환경은 해당 모듈을 만들 때 넣습니다.
+- React Router, React Compiler, CSS 규칙은 해당 모듈을 만들 때 넣습니다.
+- HTTP 요청은 axios가 아니라 `fetch` 위에 만들었습니다. 응답 검증은 zod를 씁니다.
+- 샘플 앱은 백엔드 없이 동작하도록 `createFakeApi`로 만든 가짜 서버(`apps/sample/src/fake`)를 API 클라이언트에 끼워 넣었습니다. 브라우저에서는 400ms 지연이 있고 테스트에서는 지연이 없습니다.
+- 샘플 앱은 `pnpm --filter @agent-greenhouse/sample dev`로 띄웁니다.
