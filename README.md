@@ -50,10 +50,10 @@ pnpm deps:update
 |---|---|---|
 | 0. 결정 | 규칙 후보 카탈로그 작성, 팀 코드에 돌려 채택 여부 판정 | 완료 |
 | 1. 뼈대 | 모노레포, 구역 분리, 규칙 자동 수집, `pnpm check` | 완료 |
-| 2. 기능 모듈 | 모듈마다 API + 금지 규칙 + 위반 예제 + 테스트 | Effect, 데이터 모듈 완료. UI, 구조 모듈은 시작 전 |
+| 2. 기능 모듈 | 모듈마다 API + 금지 규칙 + 위반 예제 + 테스트 | Effect, 데이터, UI 모듈 완료. 구조 모듈은 시작 전 |
 | 3. 검증 도구 | 에이전트가 샘플 앱을 띄우고 스크린샷을 증거로 남기는 CLI | 시작 전 |
 | 4. 실전 시험 | 맥락 없는 새 에이전트 세션에 프레임워크만 주고 기능을 구현시킴 | 2회 완료. 1회차는 새 기능 구현(교정 0건), 2회차는 린트 메시지만으로 기존 코드 고치기(교정 1건) |
-| 5. 반복 | 실전 시험에서 교정한 것을 규칙이나 API로 옮기고 다시 시험 | 1회차 개선 8개 중 7개, 2회차 메시지 개선 3개 반영 |
+| 5. 반복 | 실전 시험에서 교정한 것을 규칙이나 API로 옮기고 다시 시험 | 1회차 개선 8개, 2회차 메시지 개선 3개 반영. UI 모듈의 메시지는 아직 시험하지 않음 |
 
 ### 2단계 모듈 후보
 
@@ -62,7 +62,7 @@ pnpm deps:update
 - **Effect 모듈 (완료)**: `useEventListener`, `useClickOutside`, `useKeydown`, `useTimeout`, `useInterval`, `useDebouncedValue`, `useAnimationFrame`. 제품 코드에서 `useEffect`, 타이머, `addEventListener`를 금지합니다. 크기 측정이나 스크롤 맞추기처럼 아직 훅이 없는 용도는 실전 시험에서 필요가 확인되면 추가합니다.
 - **데이터 모듈 (완료)**: `createApiClient`(응답 스키마 필수), `defineQuery`와 `useData`, `defineMutation`과 `useMutate`, `DataBoundary`, `DataProvider`. 제품 코드에서 `axios`, `fetch`, `@tanstack/react-query` 직접 사용을 금지합니다. 검색처럼 인자가 자주 바뀌는 조회는 `useDeferredData`를 씁니다. 조건부 조회, 무한 스크롤, 낙관적 갱신은 아직 없고 실전 시험에서 필요가 확인되면 추가합니다.
 - **가짜 서버와 테스트 도우미 (완료)**: `fake-api`의 `createFakeApi`(지연, 한 번 실패, 요청 기록)와 `testing`의 `renderWithData`, `advanceTime`. 실전 시험에서 에이전트가 직접 만들어 쓰던 것을 프레임워크로 옮겼습니다.
-- **UI 모듈**: 디자인 토큰, 기본 컴포넌트. 생 `<button>`과 고정 값 인라인 스타일을 금지합니다.
+- **UI 모듈 (완료)**: 디자인 토큰(CSS 변수, 다크 모드 포함)과 `Button`, `TextField`, `Stack`, `Card`, `Text`, `Page`, `ErrorNotice`. 제품 코드에서 생 `<button>`과 `<input>`, 고정 값 인라인 `style`, `div` 같은 요소의 `onClick`을 금지합니다. 실행 중에 정해지는 값은 `style`에 쓸 수 있습니다. 체크박스, 셀렉트, 모달은 아직 없고 실전 시험에서 필요가 확인되면 추가합니다.
 - **구조 모듈**: 기능 폴더 규칙과 폴더 간 import 금지.
 
 모듈은 자기 폴더만 건드리므로 여러 세션이 동시에 작업할 수 있습니다.
@@ -71,6 +71,7 @@ pnpm deps:update
 
 - 샘플 앱 주제. 실제로 만드는 화면과 비슷할수록(목록, 상세, 폼, 로그인) 실전 시험이 쓸모 있습니다.
 - `pnpm deps:update`를 주기적으로 돌리는 장치(CI 예약 실행).
+- 제품 코드가 자기 CSS를 쓰는 방법. 지금은 `className`과 CSS 파일을 막지 않고, 제품 CSS에 토큰을 강제하는 검사(stylelint)도 없습니다. 샘플 앱은 UI 모듈만으로 그려서 자체 CSS가 없습니다.
 
 ### 알아 둘 것
 
@@ -80,3 +81,5 @@ pnpm deps:update
 - HTTP 요청은 axios가 아니라 `fetch` 위에 만들었습니다. 응답 검증은 zod를 씁니다.
 - 샘플 앱은 백엔드 없이 동작하도록 `createFakeApi`로 만든 가짜 서버(`apps/sample/src/fake`)를 API 클라이언트에 끼워 넣었습니다. 브라우저에서는 400ms 지연이 있고 테스트에서는 지연이 없습니다.
 - 샘플 앱은 `pnpm --filter @agent-greenhouse/sample dev`로 띄웁니다.
+- UI 모듈을 가져오면 토큰과 기본 스타일(`body`, 제목, 목록의 여백과 글꼴)이 전역으로 들어갑니다. 따로 불러올 CSS는 없습니다.
+- UI 컴포넌트는 `className`과 `style`을 받지 않습니다. 모양은 `variant`, `tone`, `gap` 같은 속성으로만 고릅니다.
