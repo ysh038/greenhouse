@@ -1,4 +1,5 @@
 import { invariant } from '@agent-greenhouse/framework/assert'
+import { DataProvider } from '@agent-greenhouse/framework/data'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
@@ -9,6 +10,8 @@ invariant(container, '#root 요소가 없습니다')
 
 createRoot(container).render(
     <StrictMode>
-        <App />
+        <DataProvider>
+            <App />
+        </DataProvider>
     </StrictMode>,
 )
