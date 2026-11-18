@@ -18,3 +18,8 @@
     margin: 0;
     accent-color: var(--gh-color-primary);
 }
+
+.label[data-struck='true'] {
+    color: var(--gh-color-text-muted);
+    text-decoration: line-through;
+}

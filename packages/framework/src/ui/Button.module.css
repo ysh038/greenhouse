@@ -54,8 +54,14 @@
     background: var(--gh-color-selected);
 }
 
+/*
+ * 선택·펼침 상태는 마우스가 올라가 있어도 유지합니다.
+ * 호버 규칙과 우선순위가 같아지도록 선택자를 맞추고, 파일의 맨 뒤에 둡니다.
+ */
 .button[aria-pressed='true'],
-.button[aria-expanded='true'] {
+.button[aria-expanded='true'],
+.button[aria-pressed='true']:hover:not(:disabled),
+.button[aria-expanded='true']:hover:not(:disabled) {
     border-color: var(--gh-color-primary);
     background: var(--gh-color-selected);
 }

@@ -20,7 +20,15 @@
     white-space: nowrap;
 }
 
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--gh-space-sm);
+}
+
 .input {
+    flex: 1;
+    min-width: 0;
     min-height: var(--gh-control-height-md);
     padding: 0 var(--gh-space-md);
     border: 1px solid var(--gh-color-border);

@@ -112,6 +112,26 @@ describe('TextField', () => {
         expect(input.getAttribute('aria-describedby')).toBe(alert.id)
     })
 
+    it('trailing은 입력란과 같은 줄에, 오류 문장보다 앞에 놓인다', () => {
+        render(
+            <TextField
+                label="새 작업"
+                value=""
+                onChange={() => undefined}
+                errorMessage="제목을 입력하세요"
+                trailing={<Button type="submit">추가</Button>}
+            />,
+        )
+        const input = screen.getByRole('textbox', { name: '새 작업' })
+        const button = screen.getByRole('button', { name: '추가' })
+        const alert = screen.getByRole('alert')
+
+        expect(button.parentElement).toBe(input.parentElement)
+        expect(
+            button.compareDocumentPosition(alert) & Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy()
+    })
+
     it('두 입력란의 라벨이 서로 섞이지 않는다', () => {
         render(
             <>
@@ -167,6 +187,20 @@ describe('Checkbox', () => {
             'disabled',
             true,
         )
+    })
+})
+
+describe('Checkbox isStruck', () => {
+    it('isStruck면 라벨에 취소선 표시를 달고, 기본은 달지 않는다', () => {
+        render(
+            <>
+                <Checkbox label="끝난 일" checked isStruck onChange={() => undefined} />
+                <Checkbox label="남은 일" checked={false} onChange={() => undefined} />
+            </>,
+        )
+
+        expect(screen.getByText('끝난 일').dataset.struck).toBe('true')
+        expect(screen.getByText('남은 일').dataset.struck).toBeUndefined()
     })
 })
 

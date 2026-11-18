@@ -1,4 +1,4 @@
-import { useId, type ComponentProps } from 'react'
+import { useId, type ComponentProps, type ReactNode } from 'react'
 
 import styles from './TextField.module.css'
 
@@ -23,6 +23,11 @@ export type TextFieldProps = Omit<
     errorMessage?: string
     /** 라벨을 화면에서 숨깁니다. 스크린 리더는 계속 읽습니다. */
     isLabelHidden?: boolean
+    /**
+     * 입력란 오른쪽에 붙일 것. 보통 제출 버튼입니다.
+     * Stack으로 나란히 놓으면 오류 문장이 나올 때 버튼이 어긋나므로 이것을 씁니다.
+     */
+    trailing?: ReactNode
 }
 
 export function TextField({
@@ -32,6 +37,7 @@ export function TextField({
     type = 'text',
     errorMessage,
     isLabelHidden = false,
+    trailing,
     ...rest
 }: TextFieldProps) {
     const id = useId()
@@ -46,18 +52,21 @@ export function TextField({
             >
                 {label}
             </label>
-            <input
-                {...rest}
-                id={id}
-                type={type}
-                value={value}
-                className={styles.input}
-                aria-invalid={hasError}
-                aria-describedby={hasError ? errorId : undefined}
-                onChange={(event) => {
-                    onChange(event.target.value)
-                }}
-            />
+            <div className={styles.row}>
+                <input
+                    {...rest}
+                    id={id}
+                    type={type}
+                    value={value}
+                    className={styles.input}
+                    aria-invalid={hasError}
+                    aria-describedby={hasError ? errorId : undefined}
+                    onChange={(event) => {
+                        onChange(event.target.value)
+                    }}
+                />
+                {trailing}
+            </div>
             {hasError && (
                 <span id={errorId} role="alert" className={styles.error}>
                     {errorMessage}

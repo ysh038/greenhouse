@@ -9,7 +9,7 @@ const BUTTON_MESSAGE = [
 
 const INPUT_MESSAGE = [
     `제품 코드에서는 <input>을 직접 쓸 수 없습니다 (${FROM}).`,
-    '· 글자 입력: TextField(label, value, onChange). 입력 오류는 errorMessage에 문장을 넘기면 표시됩니다.',
+    '· 글자 입력: TextField(label, value, onChange). 입력 오류는 errorMessage에, 옆에 붙일 제출 버튼은 trailing에 넘깁니다.',
     '· 체크박스: Checkbox(label, checked, onChange)',
     '· 둘 다 label이 필수라 <label>로 따로 감싸지 않고, onChange는 이벤트가 아니라 바뀐 값을 받습니다: onChange={setName}',
     '라디오나 파일처럼 맞는 것이 없으면 packages/framework/src/ui에 컴포넌트를 추가하세요.',
