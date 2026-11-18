@@ -7,6 +7,7 @@ import {
     useKeydown,
     useTimeout,
 } from '@agent-greenhouse/framework/effect'
+import { TextField } from '@agent-greenhouse/framework/ui'
 import { useRef, useState } from 'react'
 
 export function Menu({ onClose }: { onClose: () => void }) {
@@ -44,12 +45,7 @@ export function Menu({ onClose }: { onClose: () => void }) {
 
     return (
         <div ref={panelRef} style={{ opacity: 1 - progress }}>
-            <input
-                value={query}
-                onChange={(event) => {
-                    setQuery(event.target.value)
-                }}
-            />
+            <TextField label="검색어" value={query} onChange={setQuery} />
             <p>
                 {debouncedQuery} {width} {seconds}
             </p>

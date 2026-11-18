@@ -12,6 +12,14 @@ import {
     useKeydown,
     useTimeout,
 } from '@agent-greenhouse/framework/effect'
+import {
+    Button,
+    Card,
+    ErrorNotice,
+    Stack,
+    Text,
+    TextField,
+} from '@agent-greenhouse/framework/ui'
 import { useRef, useState, type SyntheticEvent } from 'react'
 import { z } from 'zod'
 
@@ -41,7 +49,7 @@ function NoticeList({ keyword }: { keyword: string }) {
     const { data: notices } = useDeferredData(noticesQuery({ keyword }))
     return (
         <>
-            <p>공지 {notices.length}건</p>
+            <Text tone="muted">공지 {notices.length}건</Text>
             <ul aria-label="공지 목록">
                 {notices.map((notice) => (
                     <li key={notice.id}>{notice.title}</li>
@@ -59,10 +67,16 @@ function HelpMenu() {
 
     return (
         <div ref={ref}>
-            <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}>
-                도움말
-            </button>
-            {open && <p role="note">공지는 최신순으로 보입니다.</p>}
+            <Stack direction="row" gap="sm">
+                <Button size="sm" aria-expanded={open} onClick={() => setOpen(!open)}>
+                    도움말
+                </Button>
+                {open && (
+                    <Text role="note" tone="muted">
+                        공지는 최신순으로 보입니다.
+                    </Text>
+                )}
+            </Stack>
         </div>
     )
 }
@@ -95,17 +109,28 @@ function NoticeForm() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <label>
-                새 공지{' '}
-                <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </label>{' '}
-            <button type="submit" disabled={createNotice.isPending}>
-                등록
-            </button>
-            {saveErrorStatus !== null && (
-                <p role="alert">등록하지 못했습니다 ({saveErrorStatus})</p>
-            )}
-            {added && <p role="status">등록했습니다</p>}
+            <Stack gap="sm">
+                <Stack direction="row" align="end" gap="sm">
+                    <TextField label="새 공지" value={title} onChange={setTitle} />
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={createNotice.isPending}
+                    >
+                        등록
+                    </Button>
+                </Stack>
+                {saveErrorStatus !== null && (
+                    <Text role="alert" tone="danger">
+                        등록하지 못했습니다 ({saveErrorStatus})
+                    </Text>
+                )}
+                {added && (
+                    <Text role="status" tone="success">
+                        등록했습니다
+                    </Text>
+                )}
+            </Stack>
         </form>
     )
 }
@@ -115,32 +140,25 @@ export function NoticeBoard() {
     const searchKeyword = useDebouncedValue(keyword, 300)
 
     return (
-        <section>
+        <Card>
             <h2>공지사항</h2>
             <HelpMenu />
-            <label>
-                공지 검색{' '}
-                <input
-                    type="search"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                />
-            </label>
+            <TextField
+                type="search"
+                label="공지 검색"
+                value={keyword}
+                onChange={setKeyword}
+            />
             <DataBoundary
-                pending={<p>불러오는 중</p>}
+                pending={<Text tone="muted">불러오는 중</Text>}
                 resetKeys={[searchKeyword]}
                 renderError={({ retry }) => (
-                    <div role="alert">
-                        <p>공지를 불러오지 못했습니다</p>
-                        <button type="button" onClick={retry}>
-                            다시 시도
-                        </button>
-                    </div>
+                    <ErrorNotice message="공지를 불러오지 못했습니다" onRetry={retry} />
                 )}
             >
                 <NoticeList keyword={searchKeyword} />
             </DataBoundary>
             <NoticeForm />
-        </section>
+        </Card>
     )
 }

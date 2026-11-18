@@ -1,0 +1,39 @@
+.text {
+    margin: 0;
+}
+
+.text[data-tone='default'] {
+    color: var(--gh-color-text);
+}
+
+.text[data-tone='muted'] {
+    color: var(--gh-color-text-muted);
+}
+
+.text[data-tone='danger'] {
+    color: var(--gh-color-danger);
+}
+
+.text[data-tone='success'] {
+    color: var(--gh-color-success);
+}
+
+.text[data-size='sm'] {
+    font-size: var(--gh-font-size-sm);
+}
+
+.text[data-size='md'] {
+    font-size: var(--gh-font-size-md);
+}
+
+.text[data-size='lg'] {
+    font-size: var(--gh-font-size-lg);
+}
+
+.text[data-weight='regular'] {
+    font-weight: var(--gh-font-weight-regular);
+}
+
+.text[data-weight='bold'] {
+    font-weight: var(--gh-font-weight-bold);
+}

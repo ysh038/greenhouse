@@ -1,0 +1,64 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--gh-color-border);
+    border-radius: var(--gh-radius-md);
+    background: var(--gh-color-surface);
+}
+
+.card[data-padding='none'] {
+    padding: var(--gh-space-none);
+}
+
+.card[data-padding='xs'] {
+    padding: var(--gh-space-xs);
+}
+
+.card[data-padding='sm'] {
+    padding: var(--gh-space-sm);
+}
+
+.card[data-padding='md'] {
+    padding: var(--gh-space-md);
+}
+
+.card[data-padding='lg'] {
+    padding: var(--gh-space-lg);
+}
+
+.card[data-padding='xl'] {
+    padding: var(--gh-space-xl);
+}
+
+.card[data-padding='2xl'] {
+    padding: var(--gh-space-2xl);
+}
+
+.card[data-gap='none'] {
+    gap: var(--gh-space-none);
+}
+
+.card[data-gap='xs'] {
+    gap: var(--gh-space-xs);
+}
+
+.card[data-gap='sm'] {
+    gap: var(--gh-space-sm);
+}
+
+.card[data-gap='md'] {
+    gap: var(--gh-space-md);
+}
+
+.card[data-gap='lg'] {
+    gap: var(--gh-space-lg);
+}
+
+.card[data-gap='xl'] {
+    gap: var(--gh-space-xl);
+}
+
+.card[data-gap='2xl'] {
+    gap: var(--gh-space-2xl);
+}

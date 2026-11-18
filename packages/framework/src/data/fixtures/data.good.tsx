@@ -9,6 +9,7 @@ import {
     useDeferredData,
     useMutate,
 } from '@agent-greenhouse/framework/data'
+import { Button, ErrorNotice } from '@agent-greenhouse/framework/ui'
 import { z } from 'zod'
 
 const UserSchema = z.object({ id: z.string(), name: z.string() })
@@ -44,8 +45,7 @@ function UserName({ id }: { id: string }) {
     const user = useData(userQuery(id))
     const { mutate, isPending, isError } = useMutate(renameUser)
     return (
-        <button
-            type="button"
+        <Button
             disabled={isPending}
             aria-invalid={isError}
             onClick={() => {
@@ -53,7 +53,7 @@ function UserName({ id }: { id: string }) {
             }}
         >
             {user.name}
-        </button>
+        </Button>
     )
 }
 
@@ -75,9 +75,7 @@ export function UserSearch({ keyword }: { keyword: string }) {
         <DataBoundary
             pending={<p>불러오는 중</p>}
             renderError={({ retry }) => (
-                <button type="button" onClick={retry}>
-                    다시 시도
-                </button>
+                <ErrorNotice message="불러오지 못했습니다" onRetry={retry} />
             )}
             resetKeys={[keyword]}
         >
@@ -92,9 +90,10 @@ export function UserPage({ id }: { id: string }) {
             <DataBoundary
                 pending={<p>불러오는 중</p>}
                 renderError={({ error, retry }) => (
-                    <button type="button" onClick={retry}>
-                        {isApiError(error) ? `실패 (${error.status})` : '실패'}
-                    </button>
+                    <ErrorNotice
+                        message={isApiError(error) ? `실패 (${error.status})` : '실패'}
+                        onRetry={retry}
+                    />
                 )}
             >
                 <UserName id={id} />

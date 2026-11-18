@@ -1,0 +1,48 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--gh-color-background);
+    color: var(--gh-color-text);
+    font-family: var(--gh-font-family);
+    font-size: var(--gh-font-size-md);
+    line-height: var(--gh-line-height);
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+    margin: 0;
+}
+
+h1 {
+    font-size: var(--gh-font-size-2xl);
+    font-weight: var(--gh-font-weight-bold);
+}
+
+h2 {
+    font-size: var(--gh-font-size-xl);
+    font-weight: var(--gh-font-weight-bold);
+}
+
+h3 {
+    font-size: var(--gh-font-size-lg);
+    font-weight: var(--gh-font-weight-bold);
+}
+
+ul,
+ol {
+    padding-left: var(--gh-space-xl);
+}
+
+:focus-visible {
+    outline: 2px solid var(--gh-color-focus);
+    outline-offset: 2px;
+}

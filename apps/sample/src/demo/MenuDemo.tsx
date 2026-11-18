@@ -3,6 +3,7 @@ import {
     useKeydown,
     useTimeout,
 } from '@agent-greenhouse/framework/effect'
+import { Button, Card, Stack, Text } from '@agent-greenhouse/framework/ui'
 import { useRef, useState } from 'react'
 
 const CLOSE_ANIMATION_MS = 200
@@ -29,31 +30,32 @@ export function MenuDemo() {
     )
 
     return (
-        <section>
+        <Card>
             <h2>메뉴</h2>
             <div ref={menuRef}>
-                <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    onClick={() => {
-                        if (isOpen) {
-                            requestClose()
-                        } else {
-                            setIsOpen(true)
-                        }
-                    }}
-                >
-                    메뉴 {isOpen ? '닫기' : '열기'}
-                </button>
-                {isShown && (
-                    <ul data-state={isLeaving ? 'leaving' : 'open'}>
-                        <li>프로필</li>
-                        <li>설정</li>
-                        <li>로그아웃</li>
-                    </ul>
-                )}
+                <Stack align="start" gap="sm">
+                    <Button
+                        aria-expanded={isOpen}
+                        onClick={() => {
+                            if (isOpen) {
+                                requestClose()
+                            } else {
+                                setIsOpen(true)
+                            }
+                        }}
+                    >
+                        메뉴 {isOpen ? '닫기' : '열기'}
+                    </Button>
+                    {isShown && (
+                        <ul data-state={isLeaving ? 'leaving' : 'open'}>
+                            <li>프로필</li>
+                            <li>설정</li>
+                            <li>로그아웃</li>
+                        </ul>
+                    )}
+                </Stack>
             </div>
-            <p>바깥을 누르거나 Escape를 누르면 닫힙니다.</p>
-        </section>
+            <Text tone="muted">바깥을 누르거나 Escape를 누르면 닫힙니다.</Text>
+        </Card>
     )
 }

@@ -9,6 +9,7 @@ import {
     useKeydown,
     useTimeout,
 } from '@agent-greenhouse/framework/effect'
+import { Button, Card, Stack, Text, TextField } from '@agent-greenhouse/framework/ui'
 import { useRef, useState } from 'react'
 
 import { renderLoadError } from './LoadError'
@@ -55,25 +56,26 @@ function UserEditForm({ userId }: { userId: number }) {
                 )
             }}
         >
-            <p>{user.email}</p>
-            <label>
-                이름{' '}
-                <input
+            <Stack>
+                <Text tone="muted">{user.email}</Text>
+                <TextField
                     autoFocus
+                    label="이름"
                     value={name}
-                    aria-invalid={isError}
-                    onChange={(event) => {
-                        setName(event.target.value)
-                    }}
+                    onChange={setName}
+                    errorMessage={isError ? describeSaveError(error) : undefined}
                 />
-            </label>{' '}
-            <button type="submit" disabled={isPending}>
-                저장
-            </button>
-            {isError && <p role="alert">{describeSaveError(error)}</p>}
-            {isSavedNoticeShown && !isPending && !isError && (
-                <p role="status">저장했습니다</p>
-            )}
+                <Stack direction="row" gap="sm">
+                    <Button type="submit" variant="primary" disabled={isPending}>
+                        저장
+                    </Button>
+                    {isSavedNoticeShown && !isPending && !isError && (
+                        <Text role="status" tone="success">
+                            저장했습니다
+                        </Text>
+                    )}
+                </Stack>
+            </Stack>
         </form>
     )
 }
@@ -91,17 +93,19 @@ export function UserDetailPanel({
     useKeydown('Escape', onClose)
 
     return (
-        <aside ref={panelRef} aria-label="사용자 상세">
-            <h3>사용자 상세</h3>
+        <Card as="aside" ref={panelRef} aria-label="사용자 상세">
+            <Stack direction="row" justify="between">
+                <h3>사용자 상세</h3>
+                <Button variant="ghost" size="sm" onClick={onClose}>
+                    닫기
+                </Button>
+            </Stack>
             <DataBoundary
-                pending={<p>불러오는 중</p>}
+                pending={<Text tone="muted">불러오는 중</Text>}
                 renderError={renderLoadError}
             >
                 <UserEditForm userId={userId} />
             </DataBoundary>
-            <button type="button" onClick={onClose}>
-                닫기
-            </button>
-        </aside>
+        </Card>
     )
 }

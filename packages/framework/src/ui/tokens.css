@@ -1,0 +1,62 @@
+:root {
+    color-scheme: light dark;
+
+    --gh-color-text: #1c2321;
+    --gh-color-text-muted: #5b6763;
+    --gh-color-background: #f6f7f5;
+    --gh-color-surface: #ffffff;
+    --gh-color-border: #d5dbd7;
+    --gh-color-primary: #1f6f4a;
+    --gh-color-primary-hover: #185a3c;
+    --gh-color-on-primary: #ffffff;
+    --gh-color-selected: #e3f1e9;
+    --gh-color-danger: #b3261e;
+    --gh-color-danger-surface: #fbeceb;
+    --gh-color-success: #1f6f4a;
+    --gh-color-focus: #2f8f62;
+
+    --gh-space-none: 0;
+    --gh-space-xs: 4px;
+    --gh-space-sm: 8px;
+    --gh-space-md: 12px;
+    --gh-space-lg: 16px;
+    --gh-space-xl: 24px;
+    --gh-space-2xl: 40px;
+
+    --gh-radius-sm: 4px;
+    --gh-radius-md: 8px;
+
+    --gh-font-family:
+        system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    --gh-font-size-sm: 0.8125rem;
+    --gh-font-size-md: 0.9375rem;
+    --gh-font-size-lg: 1.125rem;
+    --gh-font-size-xl: 1.375rem;
+    --gh-font-size-2xl: 1.75rem;
+    --gh-font-weight-regular: 400;
+    --gh-font-weight-bold: 600;
+    --gh-line-height: 1.5;
+
+    --gh-control-height-sm: 28px;
+    --gh-control-height-md: 36px;
+    --gh-page-width: 720px;
+    --gh-duration-fast: 120ms;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --gh-color-text: #e7ece9;
+        --gh-color-text-muted: #9aa7a1;
+        --gh-color-background: #121614;
+        --gh-color-surface: #1b211e;
+        --gh-color-border: #36403b;
+        --gh-color-primary: #4fb886;
+        --gh-color-primary-hover: #66c797;
+        --gh-color-on-primary: #0b1a13;
+        --gh-color-selected: #20382c;
+        --gh-color-danger: #f2857d;
+        --gh-color-danger-surface: #3a1e1c;
+        --gh-color-success: #4fb886;
+        --gh-color-focus: #66c797;
+    }
+}

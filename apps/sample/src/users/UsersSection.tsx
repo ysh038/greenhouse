@@ -3,6 +3,7 @@ import {
     useDebouncedValue,
     useEventListener,
 } from '@agent-greenhouse/framework/effect'
+import { Card, Stack, Text, TextField } from '@agent-greenhouse/framework/ui'
 import { useState } from 'react'
 
 import { renderLoadError } from './LoadError'
@@ -27,24 +28,20 @@ export function UsersSection() {
     const searchKeyword = useDebouncedValue(keyword, SEARCH_DEBOUNCE_MS).trim()
 
     return (
-        <section>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+        <Card>
+            <Stack direction="row" align="baseline" justify="between">
                 <h2>사용자</h2>
                 <WindowWidth />
-            </div>
-            <label>
-                사용자 검색{' '}
-                <input
-                    type="search"
-                    value={keyword}
-                    onChange={(event) => {
-                        setKeyword(event.target.value)
-                    }}
-                />
-            </label>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24 }}>
+            </Stack>
+            <TextField
+                type="search"
+                label="사용자 검색"
+                value={keyword}
+                onChange={setKeyword}
+            />
+            <Stack direction="row" align="start" gap="xl" wrap>
                 <DataBoundary
-                    pending={<p>불러오는 중</p>}
+                    pending={<Text tone="muted">불러오는 중</Text>}
                     renderError={renderLoadError}
                     resetKeys={[searchKeyword]}
                 >
@@ -63,7 +60,7 @@ export function UsersSection() {
                         }}
                     />
                 )}
-            </div>
-        </section>
+            </Stack>
+        </Card>
     )
 }

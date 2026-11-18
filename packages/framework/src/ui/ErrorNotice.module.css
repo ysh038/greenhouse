@@ -1,0 +1,17 @@
+.notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gh-space-md);
+    padding: var(--gh-space-md) var(--gh-space-lg);
+    border: 1px solid var(--gh-color-danger);
+    border-radius: var(--gh-radius-md);
+    background: var(--gh-color-danger-surface);
+    color: var(--gh-color-danger);
+}
+
+.message {
+    margin: 0;
+    overflow-wrap: anywhere;
+}

@@ -1,4 +1,5 @@
 import { isApiError, type DataErrorProps } from '@agent-greenhouse/framework/data'
+import { ErrorNotice } from '@agent-greenhouse/framework/ui'
 
 function describe(error: unknown): string {
     if (isApiError(error) && error.status === 404) {
@@ -9,12 +10,5 @@ function describe(error: unknown): string {
 }
 
 export function renderLoadError({ error, retry }: DataErrorProps) {
-    return (
-        <div role="alert">
-            <p>{describe(error)}</p>
-            <button type="button" onClick={retry}>
-                다시 시도
-            </button>
-        </div>
-    )
+    return <ErrorNotice message={describe(error)} onRetry={retry} />
 }
