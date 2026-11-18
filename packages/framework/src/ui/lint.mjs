@@ -8,11 +8,12 @@ const BUTTON_MESSAGE = [
 ].join('\n')
 
 const INPUT_MESSAGE = [
-    `제품 코드에서는 <input>을 직접 쓸 수 없습니다. TextField를 쓰세요 (${FROM}).`,
-    '· label이 필수입니다. <label>로 따로 감싸지 않습니다.',
-    '· onChange는 이벤트가 아니라 바뀐 문자열을 받습니다: onChange={setName}',
-    '· 입력 오류는 errorMessage에 문장을 넘기면 표시됩니다.',
-    '체크박스, 라디오, 파일처럼 TextField가 못 하는 입력은 packages/framework/src/ui에 컴포넌트를 추가하세요.',
+    `제품 코드에서는 <input>을 직접 쓸 수 없습니다 (${FROM}).`,
+    '· 글자 입력: TextField(label, value, onChange). 입력 오류는 errorMessage에 문장을 넘기면 표시됩니다.',
+    '· 체크박스: Checkbox(label, checked, onChange)',
+    '· 둘 다 label이 필수라 <label>로 따로 감싸지 않고, onChange는 이벤트가 아니라 바뀐 값을 받습니다: onChange={setName}',
+    '라디오나 파일처럼 맞는 것이 없으면 packages/framework/src/ui에 컴포넌트를 추가하세요.',
+    '추가할 때는 테스트를 같이 쓰고 index.ts에서 내보냅니다. 방법은 packages/framework/README.md에 있습니다.',
 ].join('\n')
 
 const STATIC_STYLE_MESSAGE = [
@@ -21,7 +22,8 @@ const STATIC_STYLE_MESSAGE = [
     `· 테두리 있는 상자와 안쪽 여백: Card(padding, gap) (${FROM})`,
     `· 글의 색, 크기, 굵기: Text(tone, size, weight) (${FROM})`,
     `· 화면 바깥 틀: Page(title) (${FROM})`,
-    '막대 너비처럼 실행 중에 정해지는 값은 style에 써도 됩니다. 그때 색과 간격은 tokens에서 가져오세요.',
+    `· 위 컴포넌트로 안 되는 고정 값(크기, 위치): 같은 폴더의 *.module.css로 옮기고 className으로 연결. 값은 var(--gh-space-sm) 같은 토큰 변수를 씁니다. 토큰 이름은 tokens에 있습니다 (${FROM})`,
+    '막대 너비처럼 실행 중에 정해지는 값만 style에 남기세요. 그때 색과 간격은 tokens에서 가져옵니다.',
 ].join('\n')
 
 const CLICK_MESSAGE = [

@@ -1,6 +1,7 @@
 import {
     Button,
     Card,
+    Checkbox,
     ErrorNotice,
     Page,
     Stack,
@@ -37,6 +38,7 @@ export function ProfilePage({
 }) {
     const [name, setName] = useState('')
     const [isHelpOpen, setIsHelpOpen] = useState(false)
+    const [isPublic, setIsPublic] = useState(false)
 
     return (
         <Page title="프로필">
@@ -73,6 +75,7 @@ export function ProfilePage({
                         </Button>
                     </Stack>
                 </form>
+                <Checkbox label="프로필 공개" checked={isPublic} onChange={setIsPublic} />
                 <UsageBar used={3} limit={10} />
             </Card>
             {saveError !== null && (

@@ -3,6 +3,7 @@ import './base.css'
 
 export { Button, type ButtonProps } from './Button'
 export { Card, type CardProps } from './Card'
+export { Checkbox, type CheckboxProps } from './Checkbox'
 export { ErrorNotice, type ErrorNoticeProps } from './ErrorNotice'
 export { Page, type PageProps } from './Page'
 export { Stack, type StackProps } from './Stack'

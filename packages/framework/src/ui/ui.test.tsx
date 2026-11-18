@@ -2,7 +2,16 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { createRef } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { Button, Card, ErrorNotice, Page, Stack, Text, TextField } from './index'
+import {
+    Button,
+    Card,
+    Checkbox,
+    ErrorNotice,
+    Page,
+    Stack,
+    Text,
+    TextField,
+} from './index'
 
 describe('Button', () => {
     it('type을 주지 않으면 폼을 제출하지 않는다', () => {
@@ -118,6 +127,45 @@ describe('TextField', () => {
         expect(screen.getByRole('textbox', { name: '이메일' })).toHaveProperty(
             'value',
             'b',
+        )
+    })
+})
+
+describe('Checkbox', () => {
+    it('label이 이름이 되고, onChange는 바뀐 상태를 받는다', () => {
+        const onChange = vi.fn<(checked: boolean) => void>()
+        render(<Checkbox label="관리자 권한" checked={false} onChange={onChange} />)
+        const checkbox = screen.getByRole('checkbox', { name: '관리자 권한' })
+
+        fireEvent.click(checkbox)
+
+        expect(onChange).toHaveBeenCalledWith(true)
+        expect(checkbox).toHaveProperty('checked', false)
+    })
+
+    it('라벨 글자를 눌러도 바뀐다', () => {
+        const onChange = vi.fn<(checked: boolean) => void>()
+        render(<Checkbox label="관리자 권한" checked onChange={onChange} />)
+
+        fireEvent.click(screen.getByText('관리자 권한'))
+
+        expect(onChange).toHaveBeenCalledWith(false)
+    })
+
+    it('disabled를 입력란에 전달한다', () => {
+        // jsdom은 비활성 체크박스도 fireEvent.click으로 바뀌므로 속성 전달만 확인합니다.
+        render(
+            <Checkbox
+                label="관리자 권한"
+                checked={false}
+                disabled
+                onChange={() => undefined}
+            />,
+        )
+
+        expect(screen.getByRole('checkbox', { name: '관리자 권한' })).toHaveProperty(
+            'disabled',
+            true,
         )
     })
 })

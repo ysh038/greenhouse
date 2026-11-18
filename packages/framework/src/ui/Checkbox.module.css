@@ -1,0 +1,20 @@
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gh-space-sm);
+    color: var(--gh-color-text);
+    font-size: var(--gh-font-size-md);
+    cursor: pointer;
+}
+
+.checkbox:has(.input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.input {
+    width: var(--gh-space-lg);
+    height: var(--gh-space-lg);
+    margin: 0;
+    accent-color: var(--gh-color-primary);
+}
