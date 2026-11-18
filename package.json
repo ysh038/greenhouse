@@ -11,6 +11,7 @@
     "lint:fixtures": "node lint/check-fixtures.mjs",
     "test": "vitest run",
     "build": "pnpm --filter @agent-greenhouse/sample build",
+    "verify": "node scripts/verify.mjs",
     "deps:update": "node scripts/update-deps.mjs"
   },
   "devDependencies": {
@@ -26,11 +27,13 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.14.0",
     "jsdom": "^31.0.1",
+    "playwright-core": "^1.65.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "stylelint": "^18.0.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.73.0",
+    "vite": "^8.3.8",
     "vitest": "^5.1.0"
   }
 }

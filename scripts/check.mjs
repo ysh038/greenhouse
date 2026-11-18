@@ -7,6 +7,7 @@ const steps = [
     ['위반 예제', 'lint:fixtures'],
     ['테스트', 'test'],
     ['샘플 앱 빌드', 'build'],
+    ['화면 검증', 'verify'],
 ]
 
 const results = []
