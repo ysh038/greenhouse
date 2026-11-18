@@ -22,7 +22,7 @@ const fixtureDirs = [
         .map((entry) => path.join(modulesDir, entry.name, 'fixtures')),
 ]
 
-const files = fixtureDirs.flatMap(walk)
+const files = fixtureDirs.flatMap(walk).filter((file) => !file.endsWith('.d.ts'))
 const failures = []
 
 function readExpected(file) {

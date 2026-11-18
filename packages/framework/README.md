@@ -7,6 +7,7 @@
 ```
 src/<모듈>/
   index.ts          공개 진입점. 제품 코드는 @agent-greenhouse/framework/<모듈>로만 가져옵니다.
+                    파일 이름은 반드시 index.ts입니다. index.tsx는 찾지 못합니다.
   *.ts(x)           구현
   *.test.ts(x)      테스트
   lint.mjs          제품 코드에 적용할 금지 규칙 (선택)
