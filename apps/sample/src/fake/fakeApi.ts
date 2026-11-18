@@ -12,9 +12,18 @@ interface User {
     email: string
 }
 
+interface Task {
+    id: number
+    title: string
+    isDone: boolean
+}
+
 const BROWSER_DELAY_MS = 400
 
 const NewTodoSchema = z.object({ title: z.string().min(1) })
+const TaskStatusSchema = z.enum(['all', 'active', 'done'])
+const TaskPatchSchema = z.object({ isDone: z.boolean() })
+const NewTaskSchema = z.object({ title: z.string().trim().min(1) })
 const UserPatchSchema = z.object({ name: z.string().trim().min(1) })
 
 const todos: Todo[] = [
@@ -36,6 +45,28 @@ const notices = [
     { id: 3, title: '정기 점검 일정' },
 ]
 
+function initialTasks(): Task[] {
+    return [
+        { id: 1, title: '온실 설계도 그리기', isDone: false },
+        { id: 2, title: '모종 주문하기', isDone: false },
+        { id: 3, title: '물주기 일정 정하기', isDone: true },
+        { id: 4, title: '온도계 달기', isDone: false },
+    ]
+}
+
+let tasks = initialTasks()
+let nextTaskId = tasks.length + 1
+
+/** 테스트에서 작업 데이터를 처음 상태로 되돌립니다. */
+export function resetTasks(): void {
+    tasks = initialTasks()
+    nextTaskId = tasks.length + 1
+}
+
+function findTask(id: string | undefined): Task | undefined {
+    return tasks.find((candidate) => candidate.id === Number(id))
+}
+
 function findUser(id: string | undefined): User | undefined {
     return users.find((candidate) => candidate.id === Number(id))
 }
@@ -43,6 +74,66 @@ function findUser(id: string | undefined): User | undefined {
 export const fakeApi = createFakeApi({
     delayMs: import.meta.env.MODE === 'test' ? 0 : BROWSER_DELAY_MS,
     routes: [
+        {
+            method: 'GET',
+            path: '/api/tasks',
+            handler: ({ query }) => {
+                const status = TaskStatusSchema.safeParse(query.get('status') ?? 'all')
+                if (!status.success) {
+                    return { status: 400, body: { code: 'INVALID_STATUS' } }
+                }
+                return {
+                    body: tasks.filter(
+                        (task) =>
+                            status.data === 'all' ||
+                            task.isDone === (status.data === 'done'),
+                    ),
+                }
+            },
+        },
+        {
+            method: 'POST',
+            path: '/api/tasks',
+            handler: ({ body }) => {
+                const parsed = NewTaskSchema.safeParse(body)
+                if (!parsed.success) {
+                    return { status: 400, body: { code: 'INVALID_TITLE' } }
+                }
+                const task = {
+                    id: nextTaskId,
+                    title: parsed.data.title,
+                    isDone: false,
+                }
+                nextTaskId += 1
+                tasks.push(task)
+                return { status: 201, body: task }
+            },
+        },
+        {
+            method: 'PATCH',
+            path: '/api/tasks/:id',
+            handler: ({ params, body }) => {
+                const task = findTask(params.id)
+                if (!task) return { status: 404, body: { code: 'NOT_FOUND' } }
+
+                const parsed = TaskPatchSchema.safeParse(body)
+                if (!parsed.success) {
+                    return { status: 400, body: { code: 'INVALID_BODY' } }
+                }
+                task.isDone = parsed.data.isDone
+                return { body: task }
+            },
+        },
+        {
+            method: 'DELETE',
+            path: '/api/tasks/:id',
+            handler: ({ params }) => {
+                const task = findTask(params.id)
+                if (!task) return { status: 404, body: { code: 'NOT_FOUND' } }
+                tasks = tasks.filter((candidate) => candidate.id !== task.id)
+                return { status: 204 }
+            },
+        },
         {
             method: 'GET',
             path: '/api/todos',
