@@ -4,8 +4,12 @@ const SECTION = { role: 'heading', name: '사용자', closest: 'section' } as co
 
 export default defineScenario({
     name: '사용자',
-    // 같은 페이지의 "응답이 스키마와 다를 때" 예시가 일부러 내는 에러입니다.
-    expectedConsoleErrors: ['/api/broken-todos'],
+    expectedConsoleErrors: [
+        // 같은 페이지의 "응답이 스키마와 다를 때" 예시가 일부러 내는 에러입니다.
+        '/api/broken-todos',
+        // 아래에서 빈 이름으로 저장해 서버가 거절하는 것을 봅니다.
+        '응답 400: PATCH /api/users/1',
+    ],
     steps: async (page) => {
         await page.see({ role: 'list', name: '사용자 목록' })
         await page.shot('목록을 불러온 상태', { of: SECTION })

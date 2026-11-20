@@ -5,9 +5,45 @@ const NEW_TASK = { label: '새 작업' } as const
 
 export default defineScenario({
     name: '작업',
-    // 같은 페이지의 "응답이 스키마와 다를 때" 예시가 일부러 내는 에러입니다.
-    expectedConsoleErrors: ['/api/broken-todos'],
+    expectedConsoleErrors: [
+        // 같은 페이지의 "응답이 스키마와 다를 때" 예시가 일부러 내는 에러입니다.
+        '/api/broken-todos',
+        // 아래에서 빈 제목으로 추가해 서버가 거절하는 것을 봅니다.
+        '응답 400: POST /api/tasks',
+    ],
     steps: async (page) => {
+        await page.see({ text: '남은 작업 3개' })
+
+        // 서버가 정상일 때는 볼 수 없는 화면은 요청을 가로채서 만듭니다.
+        const loading = await page.hold('GET /api/tasks')
+        await page.reload()
+        await page.see({ text: '불러오는 중', within: SECTION })
+        await page.shot('불러오는 중', { of: SECTION })
+        await loading.stop()
+        await page.see({ text: '남은 작업 3개' })
+
+        const failing = await page.fail('GET /api/tasks')
+        await page.reload()
+        await page.see({ text: '작업을 불러오지 못했습니다' })
+        await page.shot('불러오기에 실패한 상태', { of: SECTION })
+        await failing.stop()
+        await page.click({ role: 'button', name: '다시 시도', within: SECTION })
+        await page.see({ text: '남은 작업 3개' })
+
+        const longTitle = await page.respond('GET /api/tasks', {
+            body: [
+                {
+                    id: 1,
+                    title: '온실 북쪽 벽의 환기창을 모두 열어 두고 온도와 습도가 내려가는지 한 시간마다 확인해서 기록하기',
+                    isDone: false,
+                },
+            ],
+        })
+        await page.reload()
+        await page.see({ text: '남은 작업 1개' })
+        await page.shot('제목이 긴 작업', { of: SECTION })
+        await longTitle.stop()
+        await page.reload()
         await page.see({ text: '남은 작업 3개' })
         await page.shot('처음 (전체)', { of: SECTION })
 

@@ -12,6 +12,7 @@
     "test": "vitest run",
     "build": "pnpm --filter @agent-greenhouse/sample build",
     "verify": "node scripts/verify.mjs",
+    "verify:review": "node scripts/verify-review.mjs",
     "deps:update": "node scripts/update-deps.mjs"
   },
   "devDependencies": {

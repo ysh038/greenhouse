@@ -1,8 +1,13 @@
-import { advanceTime, renderWithData } from '@agent-greenhouse/framework/testing'
+import type { FakeApi } from '@agent-greenhouse/framework/fake-api'
+import {
+    advanceTime,
+    connectFakeApi,
+    renderWithData,
+} from '@agent-greenhouse/framework/testing'
 import { fireEvent, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { fakeApi } from '../fake/fakeApi'
+import { createFakeServer } from '../fake/fakeApi'
 
 import { NoticeBoard } from './NoticeBoard'
 
@@ -23,9 +28,11 @@ function pressOutside(element: Element) {
     fireEvent.click(element)
 }
 
+let fakeApi: FakeApi
+
 beforeEach(() => {
     vi.useFakeTimers()
-    fakeApi.reset()
+    fakeApi = connectFakeApi(createFakeServer())
 })
 
 describe('공지 목록', () => {

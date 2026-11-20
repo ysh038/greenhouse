@@ -11,6 +11,8 @@
     color: var(--gh-color-text);
     font: inherit;
     font-weight: var(--gh-font-weight-bold);
+    /* 좁은 화면에서 글자가 여러 줄로 접힐 때 줄마다 가운데로 모이지 않게 합니다. 한 줄일 때는 위의 justify-content가 가운데에 둡니다. */
+    text-align: start;
     cursor: pointer;
     transition:
         background var(--gh-duration-fast),

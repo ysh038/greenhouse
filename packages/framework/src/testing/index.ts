@@ -1,1 +1,1 @@
-export { advanceTime, renderWithData } from './helpers'
+export { advanceTime, connectFakeApi, renderWithData } from './helpers'

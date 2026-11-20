@@ -27,6 +27,25 @@ export type ShotOptions = {
     of?: Target
 }
 
+/**
+ * 서버로 가는 요청을 메서드와 경로로 가리킵니다. 쿼리(`?` 뒤)는 적지 않습니다.
+ * 경로의 한 칸은 `*`로 아무 값이나 받을 수 있습니다.
+ * 예: 'GET /api/tasks', 'PATCH /api/tasks/*'
+ */
+export type RequestPattern = `${'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'} /${string}`
+
+/** 서버 대신 돌려줄 응답. status를 안 주면 200입니다. body는 JSON으로 보냅니다. */
+export type Reply = {
+    status?: number
+    body?: unknown
+}
+
+/** 요청 가로채기 하나. stop을 부를 때까지 그 요청을 계속 가로챕니다. */
+export type Interception = {
+    /** 가로채기를 끝냅니다. 붙잡아 둔 요청이 있으면 서버로 보냅니다. */
+    stop: () => Promise<void>
+}
+
 /** 시나리오가 화면에 할 수 있는 일. 모든 동작은 대상이 나타날 때까지 기다립니다. */
 export type ScenarioPage = {
     /** 지금 화면을 증거로 남깁니다. 이름은 보고서에 그대로 나옵니다. */
@@ -41,6 +60,20 @@ export type ScenarioPage = {
     see: (target: Target) => Promise<void>
     /** 대상이 사라질 때까지 기다립니다. 끝내 남아 있으면 시나리오가 실패합니다. */
     gone: (target: Target) => Promise<void>
+    /** 페이지를 새로 엽니다. 처음 불러올 때의 화면을 보려면 가로채기를 건 뒤에 부릅니다. */
+    reload: () => Promise<void>
+    /**
+     * 그 요청을 서버로 보내지 않고 붙잡아 둡니다. "불러오는 중"이나 "저장 중" 화면을 찍을 때 씁니다.
+     * stop을 부르면 붙잡아 둔 요청이 서버로 갑니다.
+     */
+    hold: (request: RequestPattern) => Promise<Interception>
+    /**
+     * 그 요청에 서버 대신 실패 응답을 돌려줍니다. status를 안 주면 500입니다.
+     * 화면이 다시 시도해도 stop을 부를 때까지 계속 실패합니다.
+     */
+    fail: (request: RequestPattern, status?: number) => Promise<Interception>
+    /** 그 요청에 서버 대신 주어진 응답을 돌려줍니다. 빈 목록 같은 화면을 만들 때 씁니다. */
+    respond: (request: RequestPattern, reply: Reply) => Promise<Interception>
 }
 
 export type VariantName = 'desktop-light' | 'desktop-dark' | 'mobile-light'
@@ -55,9 +88,18 @@ export type Scenario = {
     /**
      * 이 화면에서 나는 것이 정상인 콘솔 에러. 메시지에 이 글자가 들어 있으면 문제로 세지 않습니다.
      * 그 밖의 콘솔 에러는 모두 문제로 보고합니다.
+     *
+     * 서버의 실패 응답(400 이상)도 `응답 400: POST /api/tasks` 모양의 메시지로 여기에 걸립니다.
+     * 시나리오가 일부러 내는 실패(빈 값으로 저장 등)는 그 글자를 그대로 적습니다.
+     * fail이나 respond로 가로채서 낸 실패는 적지 않아도 됩니다. 그 실패를 화면이 콘솔에 다시 남긴 것도
+     * 메시지에 그 요청(`GET /api/tasks`)이 들어 있으면 세지 않습니다. 들어 있지 않으면 여기에 적습니다.
      */
     expectedConsoleErrors?: readonly string[]
-    /** 사용자가 하는 순서대로 조작하고, 볼 만한 상태마다 shot으로 남깁니다. */
+    /**
+     * 사용자가 하는 순서대로 조작하고, 볼 만한 상태마다 shot으로 남깁니다.
+     * 서버가 정상일 때는 볼 수 없는 화면(불러오는 중, 실패, 빈 목록)은 hold, fail, respond로 만듭니다.
+     * 가로채도록 한 요청이 끝까지 오지 않으면 문제로 보고됩니다.
+     */
     steps: (page: ScenarioPage) => Promise<void>
 }
 

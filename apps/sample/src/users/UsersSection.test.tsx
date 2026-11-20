@@ -1,8 +1,13 @@
-import { advanceTime, renderWithData } from '@agent-greenhouse/framework/testing'
+import type { FakeApi } from '@agent-greenhouse/framework/fake-api'
+import {
+    advanceTime,
+    connectFakeApi,
+    renderWithData,
+} from '@agent-greenhouse/framework/testing'
 import { act, fireEvent, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { fakeApi } from '../fake/fakeApi'
+import { createFakeServer } from '../fake/fakeApi'
 
 import { UsersSection } from './UsersSection'
 
@@ -27,9 +32,11 @@ async function openPanel(name: string) {
     return screen.getByRole('complementary', { name: '사용자 상세' })
 }
 
+let fakeApi: FakeApi
+
 beforeEach(() => {
     vi.useFakeTimers()
-    fakeApi.reset()
+    fakeApi = connectFakeApi(createFakeServer())
 })
 
 describe('목록', () => {

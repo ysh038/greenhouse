@@ -10,7 +10,7 @@ export class ApiError extends Error {
         status: number
         body: unknown
     }) {
-        super(`${details.method} ${details.url} 요청이 ${details.status}로 실패했습니다.`)
+        super(`${details.method} ${details.url} 요청이 실패했습니다 (${details.status}).`)
         this.name = 'ApiError'
         this.method = details.method
         this.url = details.url

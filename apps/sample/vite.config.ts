@@ -1,6 +1,8 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+import { fakeServerPlugin } from './fakeServer.plugin.mjs'
+
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), fakeServerPlugin({ entry: '/src/fake/fakeApi.ts' })],
 })
