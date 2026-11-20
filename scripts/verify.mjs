@@ -15,9 +15,12 @@ import {
     buildSheets,
     evidenceDir as outDir,
     looksSame,
+    readSheetRecords,
     readStore,
     reviewedDir,
+    reviewedSheetsDir,
     rootDir,
+    writeSheetRecords,
     writeStore,
 } from './lib/review.mjs'
 
@@ -615,6 +618,16 @@ try {
                 delete store[key]
             }
             writeStore(store)
+            // 어느 스크린샷도 가리키지 않는 모아 보기 사본(다시 검토해서 낡은 것)을 지웁니다.
+            const usedRecords = new Set(
+                Object.values(store).flatMap((entry) => entry.sheetRecordIds ?? []),
+            )
+            const records = readSheetRecords()
+            for (const record of records) {
+                if (usedRecords.has(record.recordId)) continue
+                fs.rmSync(path.join(reviewedSheetsDir, record.file), { force: true })
+            }
+            writeSheetRecords(records.filter((record) => usedRecords.has(record.recordId)))
         }
         const notes = new Map()
         for (const key of currentKeys) {

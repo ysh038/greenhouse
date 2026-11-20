@@ -45,6 +45,20 @@ export function writePending(pending) {
     fs.writeFileSync(pendingFile, `${JSON.stringify(pending, null, 2)}\n`)
 }
 
+const sheetsFile = path.join(reviewedDir, 'sheets.json')
+/** 검토를 기록한 모아 보기의 사본. PR에 붙일 때 씁니다 (`pnpm verify:attach`). */
+export const reviewedSheetsDir = path.join(reviewedDir, 'sheets')
+
+/** [{ recordId, id, file, note, at, branch }] */
+export function readSheetRecords() {
+    return readJson(sheetsFile, [])
+}
+
+export function writeSheetRecords(records) {
+    fs.mkdirSync(reviewedDir, { recursive: true })
+    fs.writeFileSync(sheetsFile, `${JSON.stringify(records, null, 2)}\n`)
+}
+
 /** 검토한 사본의 파일 이름. 키에 한글과 빈칸이 있어서 해시로 만듭니다. */
 export function reviewedFileName(key) {
     return `${crypto.createHash('sha256').update(key).digest('hex').slice(0, 24)}.png`

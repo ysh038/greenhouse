@@ -13,6 +13,7 @@
     "build": "pnpm --filter @agent-greenhouse/sample build",
     "verify": "node scripts/verify.mjs",
     "verify:review": "node scripts/verify-review.mjs",
+    "verify:attach": "node scripts/verify-attach.mjs",
     "deps:update": "node scripts/update-deps.mjs"
   },
   "devDependencies": {

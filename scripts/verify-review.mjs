@@ -3,6 +3,7 @@
 //   pnpm verify:review                 검토가 남은 장 목록
 //
 // 확인 코드는 모아 보기 그림 위쪽에만 적혀 있습니다. 그림을 열어야 알 수 있습니다.
+import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -10,9 +11,13 @@ import {
     evidenceDir,
     hashCode,
     readPending,
+    readSheetRecords,
     readStore,
     reviewedDir,
     reviewedFileName,
+    reviewedSheetsDir,
+    rootDir,
+    writeSheetRecords,
     writePending,
     writeStore,
 } from './lib/review.mjs'
@@ -65,9 +70,26 @@ if (note === '') {
 sheet.isReviewed = true
 sheet.note = note
 
+// 검토한 모아 보기를 남겨 둡니다. PR에 붙일 때(`pnpm verify:attach`) 어느 브랜치에서 검토했는지로 고릅니다.
+const recordId = `${Date.now()}-${sheet.id}`
+sheet.recordId = recordId
+const branch = spawnSync('git', ['branch', '--show-current'], {
+    cwd: rootDir,
+    encoding: 'utf8',
+}).stdout.trim()
+fs.mkdirSync(reviewedSheetsDir, { recursive: true })
+fs.copyFileSync(
+    path.join(evidenceDir, sheet.file),
+    path.join(reviewedSheetsDir, `${recordId}.png`),
+)
+
 // 긴 스크린샷은 여러 장에 나뉘어 들어갑니다. 그것이 든 장을 모두 검토했을 때 검토한 것으로 남깁니다.
 const store = readStore()
 const at = new Date().toLocaleString('sv-SE').slice(0, 16)
+writeSheetRecords([
+    ...readSheetRecords(),
+    { recordId, id: sheet.id, file: `${recordId}.png`, note, at, branch },
+])
 let recordedCount = 0
 for (const shot of sheet.shots) {
     const sheetsWithShot = pending.sheets.filter((candidate) =>
@@ -81,6 +103,8 @@ for (const shot of sheet.shots) {
         file,
         note: [...new Set(sheetsWithShot.map((candidate) => candidate.note))].join(' / '),
         at,
+        // 이 스크린샷이 든 모아 보기의 기록들. 다시 검토하면 새 기록으로 바뀝니다.
+        sheetRecordIds: sheetsWithShot.map((candidate) => candidate.recordId),
     }
     recordedCount += 1
 }
