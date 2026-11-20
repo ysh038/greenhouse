@@ -87,7 +87,7 @@ function TaskList({ status }: { status: TaskStatus }) {
     const remove = useMutate(deleteTask)
 
     if (tasks.length === 0) {
-        return <Text tone="muted">작업이 없습니다</Text>
+        return <Text>작업이 없습니다</Text>
     }
 
     return (
