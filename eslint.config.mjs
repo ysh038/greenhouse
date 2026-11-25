@@ -14,5 +14,9 @@ const productLint = await collectModuleLint(
 export default [
     { ignores: ['**/dist/**', '**/node_modules/**', 'tools/**'] },
     ...createBase(rootDir),
-    { files: PRODUCT_FILES, rules: toRules(productLint) },
+    {
+        files: PRODUCT_FILES,
+        plugins: productLint.plugins,
+        rules: toRules(productLint),
+    },
 ]

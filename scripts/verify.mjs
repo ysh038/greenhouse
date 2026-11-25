@@ -90,11 +90,12 @@ function listFiles(dir) {
 /**
  * 화면 코드(.tsx)가 있는데 시나리오(*.verify.ts)가 하나도 없는 기능 폴더를 찾습니다.
  * 기능 폴더는 src 바로 아래의 폴더입니다. src에 바로 놓인 파일(App.tsx, main.tsx)은 보지 않습니다.
+ * shared는 기능이 아니라 여러 기능이 같이 쓰는 코드라서 보지 않습니다. 그 코드는 쓰는 화면의 시나리오가 다룹니다.
  */
 function findFoldersWithoutScenario(srcDir) {
     return fs
         .readdirSync(srcDir, { withFileTypes: true })
-        .filter((entry) => entry.isDirectory())
+        .filter((entry) => entry.isDirectory() && entry.name !== 'shared')
         .map((entry) => path.join(srcDir, entry.name))
         .filter((folder) => {
             const names = listFiles(folder)

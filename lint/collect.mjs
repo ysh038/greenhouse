@@ -21,6 +21,7 @@ function emptyFragment() {
     return {
         ...Object.fromEntries(LIST_KEYS.map((key) => [key, []])),
         rules: {},
+        plugins: {},
     }
 }
 
@@ -30,9 +31,9 @@ export function mergeFragment(merged, owners, name, fragment) {
     }
 
     for (const key of Object.keys(fragment)) {
-        if (!LIST_KEYS.includes(key) && key !== 'rules') {
+        if (!LIST_KEYS.includes(key) && key !== 'rules' && key !== 'plugins') {
             throw new Error(
-                `[${name}] 알 수 없는 키 "${key}". 쓸 수 있는 키: ${[...LIST_KEYS, 'rules'].join(', ')}`,
+                `[${name}] 알 수 없는 키 "${key}". 쓸 수 있는 키: ${[...LIST_KEYS, 'rules', 'plugins'].join(', ')}`,
             )
         }
     }
@@ -46,6 +47,16 @@ export function mergeFragment(merged, owners, name, fragment) {
             }
             merged[key].push(entry)
         }
+    }
+
+    // 모듈이 직접 만든 규칙은 plugins로 등록하고 rules에서 "<플러그인>/<규칙>"으로 켭니다.
+    for (const [pluginName, plugin] of Object.entries(fragment.plugins ?? {})) {
+        if (pluginName in merged.plugins) {
+            throw new Error(
+                `[${name}] "${pluginName}" 플러그인은 이미 다른 모듈이 등록했습니다.`,
+            )
+        }
+        merged.plugins[pluginName] = plugin
     }
 
     for (const [rule, setting] of Object.entries(fragment.rules ?? {})) {

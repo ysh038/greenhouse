@@ -7,7 +7,7 @@ import {
 import { fireEvent, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createFakeServer } from '../fake/fakeApi'
+import { createFakeServer } from '../shared/fake/fakeApi'
 
 import { NoticeBoard } from './NoticeBoard'
 

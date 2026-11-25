@@ -91,6 +91,24 @@ describe('collectModuleLint', () => {
         await expect(collectModuleLint(dir)).rejects.toThrow(/이미 \[a\] 모듈이/)
     })
 
+    it('모듈이 등록한 플러그인을 모으고, 같은 이름을 두 번 등록하면 거부한다', async () => {
+        const plugin = `{ rules: { 'no-x': { create: () => ({}) } } }`
+        const dir = makeModules({
+            structure: `export default { plugins: { structure: ${plugin} }, rules: { 'structure/no-x': 'error' } }`,
+        })
+
+        const merged = await collectModuleLint(dir)
+
+        expect(Object.keys(merged.plugins)).toEqual(['structure'])
+        expect(toRules(merged)['structure/no-x']).toBe('error')
+
+        const clashing = makeModules({
+            a: `export default { plugins: { structure: ${plugin} } }`,
+            b: `export default { plugins: { structure: ${plugin} } }`,
+        })
+        await expect(collectModuleLint(clashing)).rejects.toThrow(/이미 다른 모듈이 등록/)
+    })
+
     it('알 수 없는 키는 거부한다', async () => {
         const dir = makeModules({
             data: `export default { restrictedImport: [] }`,

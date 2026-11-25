@@ -8,6 +8,7 @@
 src/<모듈>/
   index.ts          공개 진입점. 제품 코드는 @agent-greenhouse/framework/<모듈>로만 가져옵니다.
                     파일 이름은 반드시 index.ts입니다. index.tsx는 찾지 못합니다.
+                    규칙만 있는 모듈(src/structure)에는 없습니다.
   *.ts(x)           구현
   *.module.css      스타일 (UI 모듈). 값은 tokens.css의 변수만 씁니다.
   *.test.ts(x)      테스트
@@ -40,14 +41,18 @@ export default {
     restrictedProperties: [{ object: 'window', property: 'fetch', message: '...' }],
     restrictedSyntax: [{ selector: "CallExpression[callee.property.name='addEventListener']", message: '...' }],
     rules: { 'react/forbid-elements': ['error', { forbid: [] }] },
+    plugins: {},
 }
 ```
+
+기존 규칙으로 표현할 수 없는 금지는 모듈 폴더에 규칙을 직접 만들고 `plugins`에 `{ 이름: { rules: { ... } } }`로 등록한 뒤 `rules`에서 `'이름/규칙'`으로 켭니다. `src/structure`가 예입니다. 직접 만든 규칙은 `RuleTester` 테스트를 같이 둡니다.
 
 지켜야 할 것은 수집기(`lint/collect.mjs`)가 검사하고, 어기면 린트가 시작되지 않습니다.
 
 - `restricted*` 항목에는 `message`가 반드시 있어야 합니다. 대신 무엇을 쓸지 적습니다.
 - `no-restricted-*` 규칙은 `rules`에 직접 쓸 수 없습니다. `restricted*` 목록에 넣어야 다른 모듈의 항목과 합쳐집니다.
 - 두 모듈이 같은 규칙을 `rules`에 넣을 수 없습니다.
+- 두 모듈이 같은 이름의 플러그인을 등록할 수 없습니다.
 
 ## 위반 예제
 
