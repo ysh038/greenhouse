@@ -58,6 +58,8 @@ export type ScenarioPage = {
     click: (target: Target) => Promise<void>
     /** 입력란의 값을 바꿉니다. */
     fill: (target: Target, value: string) => Promise<void>
+    /** Select에서 그 이름의 항목을 고릅니다. 이름은 화면에 보이는 글자입니다. */
+    select: (target: Target, optionLabel: string) => Promise<void>
     /** 키를 누릅니다. 예: 'Escape', 'Enter', 'Tab' */
     press: (key: string) => Promise<void>
     hover: (target: Target) => Promise<void>

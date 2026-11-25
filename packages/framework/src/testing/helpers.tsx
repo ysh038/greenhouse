@@ -5,7 +5,15 @@ import { vi } from 'vitest'
 import { createDataClient, DataProvider } from '../data'
 import type { FakeApi } from '../fake-api'
 
-export function renderWithData(ui: ReactNode): RenderResult {
+/**
+ * 데이터 모듈을 쓰는 화면을 테스트에서 그립니다. 재시도는 끕니다.
+ * path를 주면 그 주소에서 연 것처럼 그립니다(라우터 모듈의 AppRouter가 든 화면). 안 주면 '/'입니다.
+ */
+export function renderWithData(
+    ui: ReactNode,
+    options: { path?: string } = {},
+): RenderResult {
+    window.history.replaceState(null, '', options.path ?? '/')
     return render(
         <DataProvider client={createDataClient({ retry: false })}>
             {ui}

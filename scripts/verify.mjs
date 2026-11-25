@@ -311,6 +311,8 @@ async function runVariant({ browser, baseUrl, scenario, folder, variantName }) {
         respond: (pattern, reply) => intercept(pattern, 'reply', reply),
         click: (target) => locate(page, target).click(),
         fill: (target, value) => locate(page, target).fill(value),
+        select: (target, optionLabel) =>
+            locate(page, target).selectOption({ label: optionLabel }).then(() => undefined),
         press: (key) => page.keyboard.press(key),
         hover: (target) => locate(page, target).hover(),
         see: (target) => locate(page, target).waitFor({ state: 'visible' }),

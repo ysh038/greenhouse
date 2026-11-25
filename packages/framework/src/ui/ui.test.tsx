@@ -10,6 +10,7 @@ import {
     Dialog,
     ErrorNotice,
     Page,
+    Select,
     Stack,
     Text,
     TextField,
@@ -484,5 +485,73 @@ describe('ConfirmDialog', () => {
         const { dialog } = renderConfirm({ errorMessage: '삭제하지 못했습니다' })
 
         expect(within(dialog).getByRole('alert').textContent).toBe('삭제하지 못했습니다')
+    })
+})
+
+describe('Select', () => {
+    const SORTS = [
+        { value: 'name', label: '이름순' },
+        { value: 'stock', label: '재고순' },
+    ] as const
+    type Sort = (typeof SORTS)[number]['value']
+
+    function SortPicker({ errorMessage }: { errorMessage?: string }) {
+        const [sort, setSort] = useState<Sort>('name')
+        return (
+            <>
+                <Select
+                    label="정렬"
+                    value={sort}
+                    options={SORTS}
+                    onChange={setSort}
+                    errorMessage={errorMessage}
+                />
+                <p>고른 값 {sort}</p>
+            </>
+        )
+    }
+
+    it('라벨로 찾을 수 있고, 고르면 이벤트가 아니라 고른 값을 넘긴다', () => {
+        render(<SortPicker />)
+
+        const select = screen.getByRole('combobox', { name: '정렬' })
+        expect(select).toHaveProperty('value', 'name')
+        expect(
+            within(select)
+                .getAllByRole('option')
+                .map((option) => option.textContent),
+        ).toEqual(['이름순', '재고순'])
+
+        fireEvent.change(select, { target: { value: 'stock' } })
+
+        expect(screen.getByText('고른 값 stock')).toBeDefined()
+        expect(select).toHaveProperty('value', 'stock')
+    })
+
+    it('오류 문장을 주면 오류 상태로 표시하고 그 문장을 입력에 연결한다', () => {
+        render(<SortPicker errorMessage="정렬을 고르세요" />)
+
+        const select = screen.getByRole('combobox', { name: '정렬' })
+        const alert = screen.getByRole('alert')
+        expect(alert.textContent).toBe('정렬을 고르세요')
+        expect(select.getAttribute('aria-invalid')).toBe('true')
+        expect(select.getAttribute('aria-describedby')).toBe(alert.id)
+    })
+
+    it('disabled면 고를 수 없다', () => {
+        render(
+            <Select
+                label="정렬"
+                value="name"
+                options={SORTS}
+                onChange={() => undefined}
+                disabled
+            />,
+        )
+
+        expect(screen.getByRole('combobox', { name: '정렬' })).toHaveProperty(
+            'disabled',
+            true,
+        )
     })
 })
