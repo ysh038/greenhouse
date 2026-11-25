@@ -15,7 +15,7 @@ function walk(dir) {
 
 const all = walk(srcDir).map((file) => path.relative(srcDir, file))
 const isTest = (file) => /\.(test|verify)\.tsx?$/.test(file) || file.startsWith('test/')
-const isFake = (file) => file.startsWith('fake/')
+const isFake = (file) => file.startsWith('fake/') || file.startsWith('shared/fake/')
 const isGiven = (file) => isFake(file) || file === 'main.tsx' || file === 'css.d.ts' || file === 'vite-env.d.ts'
 const code = all.filter((file) => /\.tsx?$/.test(file) && !isTest(file) && !isGiven(file))
 const tests = all.filter((file) => /\.tsx?$/.test(file) && isTest(file))

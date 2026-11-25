@@ -34,14 +34,14 @@ import {
     withPage,
 } from './lib.mjs'
 import {
-    flip, isAddOpen, isLive, isOn, needAddClosed, needFocus, needNotice, openAdd, openOrder,
+    HOME_MARK, flip, isAddOpen, isLive, isOn, needAddClosed, needFocus, needNotice, openAdd, openOrder,
     plantsLoaded, toOrders, toSettings, toSuppliers, waitGone,
 } from './flows.mjs'
 
 const [appDir, resultDir, portText, ...only] = process.argv.slice(2)
 
 // 식물 재고 화면에만 있는 글자 (식물 이름은 주문 목록에도 나옵니다)
-const PLANT_ROW = /재고\s*30\s*개/
+const PLANT_ROW = HOME_MARK ?? /재고\s*30\s*개/
 
 /** 패널이 Escape, 바깥 클릭, "닫기"로 닫히고 안쪽 클릭으로는 안 닫히는가 */
 async function needClosable(page, title, open) {

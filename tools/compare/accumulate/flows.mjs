@@ -1,8 +1,13 @@
 // 화면을 오가고 패널을 여는 흐름. 채점, 공통 변경 검사, 일관성 측정이 같이 씁니다.
 import { button, field, firstVisible, goTo, need, seen, sleep, textOf } from './lib.mjs'
 
+// 7회차(동시 작업)에는 식물 재고 화면이 없고 그 자리에 안내 문장만 있습니다.
+// COMPARE_HOME_TEXT에 그 문장을 넣으면 첫 화면을 그 문장으로 알아봅니다.
+const HOME_TEXT = process.env.COMPARE_HOME_TEXT
+export const HOME_MARK = HOME_TEXT ? new RegExp(HOME_TEXT) : null
+
 async function plantsLoaded(page) {
-    await need(page, /유칼립투스/, { timeout: 8000 })
+    await need(page, HOME_MARK ?? /유칼립투스/, { timeout: 8000 })
 }
 
 /** 안내가 2초쯤 보였다가 사라지는가 */

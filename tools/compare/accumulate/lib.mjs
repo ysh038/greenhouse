@@ -67,14 +67,84 @@ export async function openPage({ width = 1280, height = 800, colorScheme = 'ligh
         if (message.type() === 'error') consoleErrors.push(message.text().slice(0, 200))
     })
     page.on('pageerror', (error) => consoleErrors.push(`pageerror: ${String(error).slice(0, 200)}`))
-    if (preload.length > 0) await page.addInitScript(preloadScript(preload))
+    if (USE_ROUTE) {
+        const controller = await attachController(page, context)
+        for (const [name, ...args] of preload) await controller[name](...args)
+    } else if (preload.length > 0) {
+        await page.addInitScript(preloadScript(preload))
+    }
     await page.goto(baseUrl, { waitUntil: 'load' })
     return { page, context, consoleErrors }
 }
 
-export const api = (page, name, ...args) =>
-    page.evaluate(([n, a]) => window.__fakeApi[n](...a), [name, args])
-export const requests = (page) => page.evaluate(() => [...window.__fakeApi.requests()])
+// ---------- 가짜 서버 조작 ----------
+// 6회차까지의 앱은 가짜 서버가 브라우저 안에 있어서 window.__fakeApi로 조작했습니다.
+// 7회차의 앱은 실제 HTTP 요청을 개발 서버로 보내므로, COMPARE_CONTROL=route이면
+// 브라우저에서 /api 요청을 가로채 같은 조작(failOnce, hangOnce, setDelayMs, reset, requests)을 합니다.
+const USE_ROUTE = process.env.COMPARE_CONTROL === 'route'
+/** 개발 서버의 가짜 서버가 응답을 늦추는 시간. 이보다 빠르게는 만들 수 없습니다. */
+const SERVER_DELAY_MS = 400
+const controllers = new WeakMap()
+let runCount = 0
+
+async function attachController(page, context) {
+    const state = { queue: [], delayMs: SERVER_DELAY_MS, log: [] }
+    // 가짜 서버는 이 헤더의 값마다 데이터를 따로 둡니다. 값을 바꾸면 처음 상태의 서버가 됩니다.
+    const freshRun = async () => {
+        runCount += 1
+        await context.setExtraHTTPHeaders({ 'x-verify-run': `grade-${process.pid}-${runCount}` })
+    }
+    await freshRun()
+    await page.route(
+        (url) => url.pathname.startsWith('/api/'),
+        async (route) => {
+            const request = route.request()
+            const url = new URL(request.url())
+            state.log.push({
+                method: request.method(),
+                url: `${url.pathname}${url.search}`,
+                body: request.postData() ?? undefined,
+            })
+            const planned = state.queue.shift()
+            const delayMs = state.delayMs
+            if (planned?.kind === 'hang') return
+            if (planned?.kind === 'fail') {
+                await sleep(delayMs)
+                await route
+                    .fulfill({
+                        status: planned.status,
+                        contentType: 'application/json',
+                        body: JSON.stringify(planned.body ?? { message: 'failOnce' }),
+                    })
+                    .catch(() => {})
+                return
+            }
+            if (delayMs > SERVER_DELAY_MS) await sleep(delayMs - SERVER_DELAY_MS)
+            await route.continue().catch(() => {})
+        },
+    )
+    const controller = {
+        failOnce: (status, body) => void state.queue.push({ kind: 'fail', status, body }),
+        hangOnce: () => void state.queue.push({ kind: 'hang' }),
+        setDelayMs: (ms) => void (state.delayMs = ms),
+        reset: async () => {
+            state.queue = []
+            state.log = []
+            state.delayMs = SERVER_DELAY_MS
+            await freshRun()
+        },
+        requests: () => [...state.log],
+    }
+    controllers.set(page, controller)
+    return controller
+}
+
+export const api = async (page, name, ...args) =>
+    USE_ROUTE
+        ? controllers.get(page)[name](...args)
+        : page.evaluate(([n, a]) => window.__fakeApi[n](...a), [name, args])
+export const requests = async (page) =>
+    USE_ROUTE ? controllers.get(page).requests() : page.evaluate(() => [...window.__fakeApi.requests()])
 
 /** 보이는 것 가운데 첫 번째. 같은 글자가 든 숨은 요소가 앞에 있을 수 있어서 하나씩 봅니다. */
 export async function firstVisible(locator) {

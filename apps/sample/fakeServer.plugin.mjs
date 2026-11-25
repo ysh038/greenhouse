@@ -61,6 +61,9 @@ export function fakeServerPlugin({ entry, delayMs = 400 }) {
                     })
                     response.end(await reply.text())
                 } catch (error) {
+                    // 화면이 요청을 취소하면(AbortController, 페이지 닫기) 본문을 읽다가 끊깁니다.
+                    // 보낼 곳이 없으므로 오류로 넘기지 않습니다. 넘기면 개발 서버가 오류 화면을 띄웁니다.
+                    if (request.destroyed) return
                     next(error)
                 }
             })
