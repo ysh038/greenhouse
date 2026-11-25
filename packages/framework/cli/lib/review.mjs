@@ -1,4 +1,4 @@
-// 스크린샷 검토 기록. `pnpm verify`와 `pnpm verify:review`가 같이 씁니다.
+// 스크린샷 검토 기록. `npx greenhouse verify`와 `npx greenhouse verify:review`가 같이 씁니다.
 //
 // 검토한 스크린샷은 evidence/reviewed/ 에 복사해 둡니다. 다음 실행에서 같은 단계의 스크린샷이
 // 그 사본과 눈에 띄게 다르지 않으면 다시 검토하지 않습니다. 새로 생겼거나 달라진 것만 모아 보기로 만들고,
@@ -7,9 +7,9 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
-export const rootDir = path.resolve(import.meta.dirname, '../..')
+export const rootDir = process.cwd()
 export const evidenceDir = path.join(rootDir, 'evidence')
-/** 검토를 마친 스크린샷의 사본과 기록. `pnpm verify`가 evidence/를 비울 때 이 폴더는 남깁니다. */
+/** 검토를 마친 스크린샷의 사본과 기록. `npx greenhouse verify`가 evidence/를 비울 때 이 폴더는 남깁니다. */
 export const reviewedDir = path.join(evidenceDir, 'reviewed')
 /** 검토를 기다리는 모아 보기 */
 export const pendingDir = path.join(evidenceDir, 'review')
@@ -46,7 +46,7 @@ export function writePending(pending) {
 }
 
 const sheetsFile = path.join(reviewedDir, 'sheets.json')
-/** 검토를 기록한 모아 보기의 사본. PR에 붙일 때 씁니다 (`pnpm verify:attach`). */
+/** 검토를 기록한 모아 보기의 사본. PR에 붙일 때 씁니다 (`npx greenhouse verify:attach`). */
 export const reviewedSheetsDir = path.join(reviewedDir, 'sheets')
 
 /** [{ recordId, id, file, note, at, branch }] */

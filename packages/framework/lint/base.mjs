@@ -1,6 +1,6 @@
 import comments from '@eslint-community/eslint-plugin-eslint-comments'
 import js from '@eslint/js'
-import react from 'eslint-plugin-react'
+import eslintReact from '@eslint-react/eslint-plugin'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
@@ -30,15 +30,14 @@ export function createBase(rootDir) {
             linterOptions: { reportUnusedDisableDirectives: 'error' },
             plugins: {
                 'react-hooks': reactHooks,
-                react,
+                '@eslint-react': eslintReact,
                 'eslint-comments': comments,
             },
-            settings: { react: { version: '19' } },
             rules: {
                 ...reactHooks.configs['recommended-latest'].rules,
                 'react-hooks/exhaustive-deps': 'error',
-                'react/jsx-key': 'error',
-                'react/no-unstable-nested-components': 'error',
+                '@eslint-react/no-missing-key': 'error',
+                '@eslint-react/no-nested-component-definitions': 'error',
 
                 '@typescript-eslint/switch-exhaustiveness-check': 'error',
                 '@typescript-eslint/no-confusing-void-expression': 'off',

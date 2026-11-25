@@ -11,6 +11,7 @@
 | `accumulate/` | 화면이 쌓일 때를 비교한 시험(실전 시험 6회)의 재료. [accumulate/README.md](accumulate/README.md)에 설명이 있습니다 |
 | `concurrent/` | 여러 에이전트가 동시에 만들 때를 비교한 시험(실전 시험 7회)의 재료. [concurrent/README.md](concurrent/README.md)에 설명이 있습니다 |
 | `linked/` | 화면을 서로 잇는 과제(실전 시험 8회)의 재료. [linked/README.md](linked/README.md)에 설명이 있습니다 |
+| `packaged/` | 패키지를 설치한 새 프로젝트에서 에이전트에게 준 과제(실전 시험 9회). 출발점은 `npx @agent-greenhouse/framework init`으로 만듭니다 |
 | `board/` | 로그인과 게시판 관리 화면을 조건마다 한 번씩 만들어 본 비교의 지시문과 채점 스크립트. 가짜 서버까지 에이전트가 직접 만들고, 프레임워크 없는 조건은 데이터 라이브러리와 규칙이 없는 앱에서 시작했습니다 |
 
 ## 프레임워크 있는 조건의 출발점 만들기

@@ -1,0 +1,38 @@
+{
+  "name": "greenhouse-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0 && stylelint \"src/**/*.css\" --allow-empty-input --max-warnings 0",
+    "test": "vitest run",
+    "verify": "greenhouse verify",
+    "verify:review": "greenhouse verify:review",
+    "check": "greenhouse check"
+  },
+  "dependencies": {
+    "@agent-greenhouse/framework": "^0.1.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "eslint": "^10.15.0",
+    "jsdom": "^31.0.1",
+    "stylelint": "^18.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}

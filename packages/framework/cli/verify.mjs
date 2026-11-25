@@ -1,9 +1,9 @@
 // 화면 시나리오(*.verify.ts)를 실제 브라우저에서 돌려 스크린샷과 보고서를 남깁니다.
-//   pnpm verify            모든 시나리오
-//   pnpm verify invites    경로에 "invites"가 들어간 시나리오만
+//   npx greenhouse verify            모든 시나리오
+//   npx greenhouse verify invites    경로에 "invites"가 들어간 시나리오만
 //
 // 새로 생겼거나 달라진 스크린샷은 모아 보기(evidence/review/)로 만들어 검토를 요구합니다.
-// 검토는 `pnpm verify:review`로 기록하고, 검토가 남아 있으면 이 명령은 실패로 끝납니다.
+// 검토는 `npx greenhouse verify:review`로 기록하고, 검토가 남아 있으면 이 명령은 실패로 끝납니다.
 import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -23,8 +23,9 @@ import {
     writeSheetRecords,
     writeStore,
 } from './lib/review.mjs'
+import { loadConfig } from './config.mjs'
 
-const appDir = path.join(rootDir, 'apps/sample')
+const { appDir } = await loadConfig()
 const filter = process.argv[2] ?? ''
 
 const STEP_TIMEOUT_MS = 5000
@@ -525,7 +526,7 @@ async function launchBrowser() {
         console.error(
             [
                 `브라우저("${channel}")를 띄우지 못했습니다: ${firstLine(error)}`,
-                'pnpm verify는 이 컴퓨터에 설치된 Chrome을 씁니다.',
+                'npx greenhouse verify는 이 컴퓨터에 설치된 Chrome을 씁니다.',
                 '다른 브라우저를 쓰려면 VERIFY_BROWSER=msedge 처럼 지정하세요.',
             ].join('\n'),
         )
@@ -688,7 +689,7 @@ console.log(
         ...review.sheets.map((sheet) => `  evidence/${sheet.file}  (스크린샷 ${sheet.shotCount}장)`),
         '',
         '확인한 장마다 그림 위쪽에 적힌 확인 코드와 본 내용을 기록합니다:',
-        `  pnpm verify:review ${review.sheets[0].id} <확인 코드> "<무엇을 확인했는지>"`,
+        `  npx greenhouse verify:review ${review.sheets[0].id} <확인 코드> "<무엇을 확인했는지>"`,
         '',
         '잘림, 겹침, 어긋난 정렬, 안 보이는 글자, 틀린 문구가 보이면 기록하지 말고 고친 뒤 다시 돌립니다.',
         '모두 기록한 뒤 이 명령을 다시 돌리면 통과합니다.',

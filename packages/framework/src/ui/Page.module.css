@@ -6,3 +6,9 @@
     margin: 0 auto;
     padding: var(--gh-space-2xl) var(--gh-space-lg);
 }
+
+.header {
+    max-width: var(--gh-page-width);
+    margin: 0 auto;
+    padding: var(--gh-space-lg) var(--gh-space-lg) 0;
+}

@@ -1,6 +1,6 @@
 // 모아 보기 한 장을 검토했다고 기록합니다.
-//   pnpm verify:review <장 이름> <확인 코드> "<무엇을 확인했는지>"
-//   pnpm verify:review                 검토가 남은 장 목록
+//   npx greenhouse verify:review <장 이름> <확인 코드> "<무엇을 확인했는지>"
+//   npx greenhouse verify:review                 검토가 남은 장 목록
 //
 // 확인 코드는 모아 보기 그림 위쪽에만 적혀 있습니다. 그림을 열어야 알 수 있습니다.
 import { spawnSync } from 'node:child_process'
@@ -30,7 +30,7 @@ const remaining = () => pending.sheets.filter((sheet) => !sheet.isReviewed)
 function listRemaining() {
     const sheets = remaining()
     if (sheets.length === 0) {
-        console.log('검토가 남은 모아 보기가 없습니다. pnpm verify(또는 pnpm check)를 다시 돌리세요.')
+        console.log('검토가 남은 모아 보기가 없습니다. npx greenhouse verify(또는 npx greenhouse check)를 다시 돌리세요.')
         return
     }
     console.log('검토가 남은 모아 보기:')
@@ -70,7 +70,7 @@ if (note === '') {
 sheet.isReviewed = true
 sheet.note = note
 
-// 검토한 모아 보기를 남겨 둡니다. PR에 붙일 때(`pnpm verify:attach`) 어느 브랜치에서 검토했는지로 고릅니다.
+// 검토한 모아 보기를 남겨 둡니다. PR에 붙일 때(`npx greenhouse verify:attach`) 어느 브랜치에서 검토했는지로 고릅니다.
 const recordId = `${Date.now()}-${sheet.id}`
 sheet.recordId = recordId
 const branch = spawnSync('git', ['branch', '--show-current'], {

@@ -1,4 +1,4 @@
-// expect: react/jsx-key
+// expect: @eslint-react/no-missing-key
 export function List({ names }: { names: string[] }) {
     return (
         <ul>

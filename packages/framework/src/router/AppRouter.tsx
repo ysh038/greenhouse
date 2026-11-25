@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 
 export type AppRouterProps = {
     children: ReactNode
@@ -36,4 +36,19 @@ export function RouteView({ routes, notFound }: RouteViewProps) {
             <Route path="*" element={notFound} />
         </Routes>
     )
+}
+
+export type RedirectProps = {
+    /** 보낼 주소. defineRoute로 만든 주소의 href()를 넘깁니다. */
+    to: string
+}
+
+/**
+ * 이 화면에 오면 곧바로 다른 주소로 보냅니다. 예: '/'로 들어오면 목록으로.
+ * 지금 주소는 기록에 남기지 않으므로 뒤로 가기로 이 화면에 돌아오지 않습니다.
+ *
+ *     { route: homeRoute, screen: <Redirect to={ordersRoute.href()} /> }
+ */
+export function Redirect({ to }: RedirectProps) {
+    return <Navigate to={to} replace />
 }

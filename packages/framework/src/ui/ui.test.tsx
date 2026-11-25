@@ -555,3 +555,27 @@ describe('Select', () => {
         )
     })
 })
+
+describe('Page', () => {
+    it('header를 주면 본문 앞의 header 영역에 놓고, 안 주면 header 영역을 만들지 않는다', () => {
+        const { unmount } = render(
+            <Page title="주문" header={<nav aria-label="메뉴">메뉴</nav>}>
+                <p>본문</p>
+            </Page>,
+        )
+        const banner = screen.getByRole('banner')
+        expect(within(banner).getByRole('navigation', { name: '메뉴' })).toBeDefined()
+        expect(
+            banner.compareDocumentPosition(screen.getByRole('main')) &
+                Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy()
+        unmount()
+
+        render(
+            <Page title="주문">
+                <p>본문</p>
+            </Page>,
+        )
+        expect(screen.queryByRole('banner')).toBeNull()
+    })
+})

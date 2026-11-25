@@ -6,9 +6,9 @@ React FE용 얇은 내부 프레임워크를 만드는 저장소입니다. 목�
 
 ## 구조
 
-- `packages/framework`: 프레임워크 구역. 모듈을 추가하는 방법은 [packages/framework/README.md](packages/framework/README.md)에 있습니다.
+- `packages/framework`: 프레임워크 구역이자 npm 패키지. 모듈(`src`), 규칙과 설정(`lint`), `check`·`verify` 실행기(`cli`), 새 프로젝트의 틀(`template`)이 있습니다. 모듈을 추가하는 방법은 [packages/framework/DEVELOPING.md](packages/framework/DEVELOPING.md)에 있습니다.
 - `apps/sample`: 제품 구역. 프레임워크를 `@agent-greenhouse/framework/<모듈>`로만 가져옵니다.
-- `lint`: 모든 코드에 적용하는 규칙, 모듈 규칙 수집기, 위반 예제 검사기.
+- `lint`: 위반 예제 검사기와 예제.
 - `tools/measure`: 팀 프로젝트에 후보 규칙을 돌려 보는 측정 도구. 워크스페이스에 속하지 않습니다.
 
 ## 확인

@@ -71,23 +71,14 @@ export default {
                 "JSXAttribute[name.name='role'][value.value=/^(dialog|alertdialog)$/], JSXAttribute[name.name='aria-modal']",
             message: DIALOG_MESSAGE,
         },
+        { selector: "JSXOpeningElement[name.name='button']", message: BUTTON_MESSAGE },
+        { selector: "JSXOpeningElement[name.name='input']", message: INPUT_MESSAGE },
+        { selector: "JSXOpeningElement[name.name='select']", message: SELECT_MESSAGE },
+        { selector: "JSXOpeningElement[name.name='dialog']", message: DIALOG_MESSAGE },
         { selector: STATIC_STYLE, message: STATIC_STYLE_MESSAGE },
         {
             selector: `JSXOpeningElement[name.name=/^(${STATIC_ELEMENTS.join('|')})$/] > JSXAttribute[name.name='onClick']`,
             message: CLICK_MESSAGE,
         },
     ],
-    rules: {
-        'react/forbid-elements': [
-            'error',
-            {
-                forbid: [
-                    { element: 'button', message: BUTTON_MESSAGE },
-                    { element: 'input', message: INPUT_MESSAGE },
-                    { element: 'select', message: SELECT_MESSAGE },
-                    { element: 'dialog', message: DIALOG_MESSAGE },
-                ],
-            },
-        ],
-    },
 }

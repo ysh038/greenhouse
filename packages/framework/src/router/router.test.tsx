@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import {
     AppRouter,
     defineRoute,
+    Redirect,
     ExternalLink,
     Link,
     RouteView,
@@ -16,6 +17,7 @@ const homeRoute = defineRoute('/')
 const plantListRoute = defineRoute('/plants')
 const plantDetailRoute = defineRoute('/plants/:id')
 const noteRoute = defineRoute('/plants/:plantId/notes/:noteId')
+const oldListRoute = defineRoute('/old-plants')
 
 function PlantList() {
     const [sort, setSort] = useSearchParam('sort', 'name')
@@ -78,6 +80,10 @@ function App() {
                     { route: homeRoute, screen: <h2>홈 화면</h2> },
                     { route: plantListRoute, screen: <PlantList /> },
                     { route: plantDetailRoute, screen: <PlantDetail /> },
+                    {
+                        route: oldListRoute,
+                        screen: <Redirect to={plantListRoute.href()} />,
+                    },
                 ]}
                 notFound={<h2>화면을 찾을 수 없습니다</h2>}
             />
@@ -122,6 +128,18 @@ describe('RouteView', () => {
     it('맞는 주소가 없으면 notFound를 그린다', () => {
         openAt('/nothing/here')
         expect(heading()).toBe('화면을 찾을 수 없습니다')
+    })
+})
+
+describe('Redirect', () => {
+    it('그 주소에 오면 곧바로 다른 주소로 보내고 기록을 쌓지 않는다', () => {
+        window.history.replaceState(null, '', '/old-plants')
+        const before = window.history.length
+        render(<App />)
+
+        expect(heading()).toBe('식물 목록')
+        expect(window.location.pathname).toBe('/plants')
+        expect(window.history.length).toBe(before)
     })
 })
 

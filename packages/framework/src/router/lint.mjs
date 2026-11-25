@@ -5,7 +5,7 @@ const ROUTER_MESSAGE = [
     '· 주소 정의: defineRoute(\'/plants/:id\'). 주소는 route.href({ id })로 만듭니다.',
     '· 앱 감싸기와 화면 연결: AppRouter, RouteView(routes, notFound)',
     '· 누르는 링크: Link(to). 메뉴 항목은 appearance="nav"',
-    '· 코드에서 옮기기: useNavigate()',
+    '· 코드에서 옮기기: useNavigate(). 어떤 주소에 오면 곧바로 다른 주소로 보내기: Redirect(to)',
     '· 주소의 값 읽기: useRouteParams(route), 필터·정렬처럼 주소에 둘 상태: useSearchParam(이름, 기본값)',
     '· 로그인해야 들어갈 수 있는 화면: defineAccess()로 만든 AccessProvider와 ProtectedRoute. 로그인 화면은 useLoginReturn(기본 주소)',
 ].join('\n')

@@ -1,11 +1,5 @@
 import { noComments } from './rules/noComments.mjs'
 
-export const PRODUCT_FILES = [
-    'apps/**/*.{ts,tsx}',
-    'packages/framework/src/*/fixtures/**/*.{ts,tsx}',
-    'lint/fixtures/product/**/*.{ts,tsx}',
-]
-
 export const productZoneFragment = {
     plugins: { product: { rules: { 'no-comments': noComments } } },
     rules: { 'product/no-comments': 'error' },

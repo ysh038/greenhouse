@@ -1,4 +1,4 @@
-// expect: react/forbid-elements
+// expect: no-restricted-syntax
 export function NameInput({
     name,
     onNameChange,

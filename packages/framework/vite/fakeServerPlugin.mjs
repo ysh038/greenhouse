@@ -1,8 +1,8 @@
-// 샘플 앱에는 백엔드가 없어서, 개발 서버가 /api 요청을 받아 가짜 서버로 넘깁니다.
+// 백엔드가 아직 없는 앱에서, 개발 서버가 /api 요청을 받아 가짜 서버로 넘깁니다.
 // 앱은 실제 HTTP 요청을 보내므로 진짜 백엔드가 있는 프로젝트와 같은 길로 동작합니다.
 // 백엔드가 있는 프로젝트에는 이 파일이 필요 없습니다.
 
-// 화면 검증(scripts/verify.mjs)은 실행마다 이 헤더에 다른 값을 넣어 보냅니다.
+// 화면 검증(greenhouse verify)은 실행마다 이 헤더에 다른 값을 넣어 보냅니다.
 // 값마다 가짜 서버를 따로 만들어, 동시에 도는 검증이 서로의 데이터를 건드리지 않게 합니다.
 const RUN_HEADER = 'x-verify-run'
 
@@ -20,7 +20,7 @@ async function readBody(request) {
  */
 export function fakeServerPlugin({ entry, delayMs = 400 }) {
     return {
-        name: 'sample-fake-server',
+        name: 'greenhouse-fake-server',
         configureServer(server) {
             // 가짜 서버 파일을 고치면 모듈이 새로 불려 오고, 그때 데이터도 처음 상태로 돌아갑니다.
             const serversByModule = new WeakMap()

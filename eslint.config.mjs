@@ -1,22 +1,12 @@
-import path from 'node:path'
+import { createEslintConfig } from '@agent-greenhouse/framework/eslint'
 
-import { createBase } from './lint/base.mjs'
-import { collectModuleLint, toRules } from './lint/collect.mjs'
-import { PRODUCT_FILES, productZoneFragment } from './lint/zones.mjs'
-
-const rootDir = import.meta.dirname
-
-const productLint = await collectModuleLint(
-    path.join(rootDir, 'packages/framework/src'),
-    { 'product-zone': productZoneFragment },
-)
-
-export default [
-    { ignores: ['**/dist/**', '**/node_modules/**', 'tools/**'] },
-    ...createBase(rootDir),
-    {
-        files: PRODUCT_FILES,
-        plugins: productLint.plugins,
-        rules: toRules(productLint),
-    },
-]
+export default await createEslintConfig({
+    rootDir: import.meta.dirname,
+    // 제품 구역: 샘플 앱과, 금지 규칙이 걸리는지 보는 위반 예제
+    productFiles: [
+        'apps/**/*.{ts,tsx}',
+        'packages/framework/src/*/fixtures/**/*.{ts,tsx}',
+        'lint/fixtures/product/**/*.{ts,tsx}',
+    ],
+    ignores: ['tools/**', 'packages/framework/template/**'],
+})

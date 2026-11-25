@@ -1,6 +1,6 @@
 // 이 브랜치에서 검토한 모아 보기와 검토 기록을 PR 본문에 붙입니다.
-//   pnpm verify:attach            현재 브랜치의 PR에 붙임
-//   pnpm verify:attach --clean    머지되거나 닫힌 PR의 그림을 지움
+//   npx greenhouse verify:attach            현재 브랜치의 PR에 붙임
+//   npx greenhouse verify:attach --clean    머지되거나 닫힌 PR의 그림을 지움
 //
 // 그림은 main에 합쳐지지 않는 브랜치(verify-evidence/<PR 번호>)에 올리고 PR 본문에서 그 커밋을 가리킵니다.
 // PR이 끝난 뒤 그 브랜치를 지우면 그림도 저장소에서 사라집니다.
@@ -105,7 +105,7 @@ function attach() {
             [
                 `이 브랜치(${branch})에서 검토한 스크린샷이 없습니다.`,
                 '화면이 달라지지 않았다면 붙일 것이 없습니다.',
-                '달라졌다면 pnpm verify로 모아 보기를 만들고 pnpm verify:review로 기록한 뒤 다시 돌리세요.',
+                '달라졌다면 npx greenhouse verify로 모아 보기를 만들고 npx greenhouse verify:review로 기록한 뒤 다시 돌리세요.',
             ].join('\n'),
         )
     }

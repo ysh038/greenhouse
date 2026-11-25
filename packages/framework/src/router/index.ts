@@ -8,8 +8,10 @@ export {
 } from './access'
 export {
     AppRouter,
+    Redirect,
     RouteView,
     type AppRouterProps,
+    type RedirectProps,
     type RouteScreen,
     type RouteViewProps,
 } from './AppRouter'
