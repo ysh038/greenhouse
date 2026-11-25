@@ -1,6 +1,6 @@
 {
   "name": "@agent-greenhouse/framework",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "에이전트가 쓴 React 화면 코드를 믿을 수 있게 하는 얇은 프레임워크: 안전한 API, 그것만 쓰게 하는 린트 규칙, 화면 검증",
   "license": "MIT",
   "repository": {

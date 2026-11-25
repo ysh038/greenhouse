@@ -18,7 +18,7 @@ if (command === undefined || !(command in COMMANDS)) {
             '  verify [경로 일부]        화면 시나리오(*.verify.ts)를 브라우저에서 돌리고 스크린샷을 남깁니다',
             '  verify:review [장 코드 내용]   모아 보기 한 장을 검토했다고 기록합니다',
             '  verify:attach [--clean]   검토한 모아 보기를 PR 본문에 붙입니다 (GitHub)',
-            '  init <폴더>               새 프로젝트의 틀을 만듭니다',
+            '  init <폴더>               새 프로젝트의 틀을 만듭니다. 지금 폴더에 만들려면 init .',
         ].join('\n'),
     )
     process.exit(command === undefined ? 0 : 1)

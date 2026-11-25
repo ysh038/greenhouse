@@ -24,6 +24,14 @@ npm run check
 
 만들어진 프로젝트에는 설정 파일, 빈 화면 하나, 에이전트가 읽을 `CLAUDE.md`가 들어 있습니다.
 
+이미 만든 저장소의 루트에 바로 풀려면 그 폴더에서 `.`을 줍니다.
+
+```bash
+npx @agent-greenhouse/framework init .
+```
+
+지금 있는 파일은 덮어쓰지 않습니다. 틀의 파일과 이름이 겹치는 것(`package.json`, `src/main.tsx` 등)이 있으면 아무것도 만들지 않고 멈춥니다. `README.md`는 있던 것을 그대로 두고, `.gitignore`는 없는 줄만 덧붙입니다.
+
 ## 문서
 
 - [GUIDE.md](GUIDE.md): 모듈마다 무엇이 있고 무엇이 막혀 있는지. 에이전트가 작업 전에 읽는 문서입니다.
