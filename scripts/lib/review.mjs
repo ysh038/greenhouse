@@ -79,11 +79,14 @@ export function pngSize(buffer) {
 }
 
 // 같은 화면을 다시 찍어도 긴 스크린샷에서는 픽셀 몇백 개가 조금씩 달라집니다(색 차이 16 이하, 직접 측정함).
-// 그 정도는 같은 것으로 보고, 색이 뚜렷이 다른 픽셀이 하나라도 있거나 흐릿한 차이가 넓게 퍼져 있으면 다른 것으로 봅니다.
+// 그 정도는 같은 것으로 보고, 색이 뚜렷이 다른 픽셀이 여럿이거나 흐릿한 차이가 넓게 퍼져 있으면 다른 것으로 봅니다.
 const CLEAR_DIFFERENCE = 24
 const MAX_FAINT_RATIO = 0.0005
+// 뚜렷이 다른 픽셀도 몇 개까지는 잡음으로 봅니다. 화면을 바꾸지 않았는데 긴 스크린샷 한 장에서
+// 2픽셀이 색 차이 38~50으로 달라진 것이 세 번 관측됐습니다. 글자 하나만 바뀌어도 수백 픽셀이 달라지므로 실제 변화는 놓치지 않습니다.
+const MAX_CLEAR_PIXELS = 8
 
-const COMPARE_IN_BROWSER = `async ([a, b, clear, maxFaintRatio]) => {
+const COMPARE_IN_BROWSER = `async ([a, b, clear, maxFaintRatio, maxClearPixels]) => {
     const load = (uri) => new Promise((resolve, reject) => {
         const image = new Image()
         image.onload = () => resolve(image)
@@ -103,13 +106,17 @@ const COMPARE_IN_BROWSER = `async ([a, b, clear, maxFaintRatio]) => {
     const one = pixels(first)
     const other = pixels(second)
     let faint = 0
+    let clearCount = 0
     for (let i = 0; i < one.length; i += 4) {
         const difference = Math.max(
             Math.abs(one[i] - other[i]),
             Math.abs(one[i + 1] - other[i + 1]),
             Math.abs(one[i + 2] - other[i + 2]),
         )
-        if (difference > clear) return false
+        if (difference > clear) {
+            clearCount += 1
+            if (clearCount > maxClearPixels) return false
+        }
         if (difference > 0) faint += 1
     }
     return faint <= (one.length / 4) * maxFaintRatio
@@ -129,6 +136,7 @@ export async function looksSame(page, firstBuffer, secondBuffer) {
             toDataUri(secondBuffer),
             CLEAR_DIFFERENCE,
             MAX_FAINT_RATIO,
+            MAX_CLEAR_PIXELS,
         ])})`,
     )
 }
