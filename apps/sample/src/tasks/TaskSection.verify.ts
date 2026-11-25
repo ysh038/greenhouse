@@ -2,6 +2,7 @@ import { defineScenario } from '@agent-greenhouse/framework/verify'
 
 const SECTION = { role: 'heading', name: '작업', closest: 'section' } as const
 const NEW_TASK = { label: '새 작업' } as const
+const CONFIRM = { role: 'alertdialog' } as const
 
 export default defineScenario({
     name: '작업',
@@ -53,10 +54,18 @@ export default defineScenario({
         await page.shot('"완료" 필터', { of: SECTION })
 
         await page.click({ role: 'button', name: '삭제' })
-        await page.see({ role: 'button', name: '삭제 확인' })
-        await page.shot('삭제 확인을 묻는 상태', { of: SECTION })
+        await page.see(CONFIRM)
+        await page.shot('삭제 확인 창', { area: 'viewport' })
 
-        await page.click({ role: 'button', name: '삭제 확인' })
+        // 서버가 삭제를 거절하면 창이 닫히지 않고 안에 알립니다.
+        const failingDelete = await page.fail('DELETE /api/tasks/*')
+        await page.click({ role: 'button', name: '삭제', within: CONFIRM })
+        await page.see({ text: '삭제하지 못했습니다' })
+        await page.shot('삭제에 실패한 확인 창', { of: CONFIRM })
+        await failingDelete.stop()
+
+        await page.click({ role: 'button', name: '삭제', within: CONFIRM })
+        await page.gone(CONFIRM)
         await page.see({ text: '작업이 없습니다' })
         await page.shot('완료 작업을 지워 목록이 빈 상태', { of: SECTION })
 

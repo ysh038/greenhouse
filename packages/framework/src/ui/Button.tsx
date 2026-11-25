@@ -6,6 +6,11 @@ export type ButtonProps = Omit<ComponentProps<'button'>, 'className' | 'style'> 
     /** primary는 화면의 주된 동작 하나에만 씁니다. 기본값은 secondary. */
     variant?: 'primary' | 'secondary' | 'ghost'
     size?: 'sm' | 'md'
+    /**
+     * 삭제처럼 되돌릴 수 없는 동작에는 "danger"를 줍니다.
+     * 목록의 "삭제"는 tone="danger"만, 확인 창에서 실제로 지우는 버튼은 variant="primary"와 같이 씁니다.
+     */
+    tone?: 'default' | 'danger'
 }
 
 /**
@@ -15,6 +20,7 @@ export type ButtonProps = Omit<ComponentProps<'button'>, 'className' | 'style'> 
 export function Button({
     variant = 'secondary',
     size = 'md',
+    tone = 'default',
     type = 'button',
     ...rest
 }: ButtonProps) {
@@ -25,6 +31,7 @@ export function Button({
             className={styles.button}
             data-variant={variant}
             data-size={size}
+            data-tone={tone}
         />
     )
 }

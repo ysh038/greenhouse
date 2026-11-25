@@ -226,7 +226,7 @@ async function runVariant({ browser, baseUrl, scenario, folder, variantName }) {
         const settings = { path: path.join(outDir, file), animations: 'disabled' }
         await page.evaluate(WAIT_UNTIL_QUIET)
         if (options.of === undefined) {
-            await page.screenshot({ ...settings, fullPage: true })
+            await page.screenshot({ ...settings, fullPage: options.area !== 'viewport' })
         } else {
             await locate(page, options.of).screenshot(settings)
         }

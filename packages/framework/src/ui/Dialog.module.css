@@ -1,0 +1,62 @@
+.backdrop {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gh-space-lg);
+    background: var(--gh-color-backdrop);
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gh-space-lg);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--gh-dialog-width);
+    max-height: 100%;
+    padding: var(--gh-space-xl);
+    overflow-y: auto;
+    border: 1px solid var(--gh-color-border);
+    border-radius: var(--gh-radius-md);
+    background: var(--gh-color-surface);
+    color: var(--gh-color-text);
+}
+
+.dialog:focus-visible {
+    outline: 2px solid var(--gh-color-focus);
+    outline-offset: 2px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gh-space-md);
+}
+
+.title {
+    margin: 0;
+    font-size: var(--gh-font-size-lg);
+    font-weight: var(--gh-font-weight-bold);
+}
+
+.message {
+    margin: 0;
+    font-weight: var(--gh-font-weight-bold);
+}
+
+.error {
+    margin: 0;
+    color: var(--gh-color-danger);
+    font-size: var(--gh-font-size-sm);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--gh-space-sm);
+}

@@ -4,6 +4,7 @@ const BUTTON_MESSAGE = [
     `제품 코드에서는 <button>을 직접 쓸 수 없습니다. Button을 쓰세요 (${FROM}).`,
     '· type의 기본값이 "button"입니다. 폼을 제출하는 버튼에만 type="submit"을 주세요.',
     '· 모양은 variant("primary" | "secondary" | "ghost")와 size("sm" | "md")로 고릅니다.',
+    '· 삭제처럼 되돌릴 수 없는 동작은 tone="danger"를 줍니다.',
     '· 선택·펼침 상태는 aria-pressed, aria-expanded를 주면 모양도 같이 바뀝니다.',
 ].join('\n')
 
@@ -32,6 +33,15 @@ const CLICK_MESSAGE = [
     '· 바깥을 눌러 닫기: useClickOutside(ref, 핸들러) (@agent-greenhouse/framework/effect)',
 ].join('\n')
 
+const DIALOG_MESSAGE = [
+    `제품 코드에서는 모달을 직접 만들 수 없습니다 (${FROM}).`,
+    '포커스 가두기, Escape와 바깥 클릭으로 닫기, 닫은 뒤 포커스 되돌리기를 화면마다 다시 만들게 되고 빠뜨리기 쉽습니다.',
+    '· 화면 위에 뜨는 창(상세 보기, 입력 폼): Dialog(title, onClose). 열려 있을 때만 그립니다: {isOpen && <Dialog ...>}',
+    '· 되돌릴 수 없는 동작을 하기 전에 묻기: ConfirmDialog(message, confirmLabel, onConfirm, onCancel). 삭제면 tone="danger"',
+    '· 요청하는 동안 닫히지 않게: Dialog는 isDismissible={false}, ConfirmDialog는 isPending',
+    'window.confirm도 쓰지 않습니다. 모양을 바꿀 수 없고 화면 검증에서 스크린샷으로 남지 않습니다.',
+].join('\n')
+
 const STATIC_VALUES = [
     "Property[value.type='Literal']",
     "Property[value.type='TemplateLiteral'][value.expressions.length=0]",
@@ -43,7 +53,16 @@ const STATIC_STYLE = `JSXAttribute[name.name='style']:has(JSXExpressionContainer
 const STATIC_ELEMENTS = ['div', 'span', 'li', 'p', 'td', 'tr', 'img']
 
 export default {
+    restrictedGlobals: [{ name: 'confirm', message: DIALOG_MESSAGE }],
+    restrictedProperties: [
+        { object: 'window', property: 'confirm', message: DIALOG_MESSAGE },
+    ],
     restrictedSyntax: [
+        {
+            selector:
+                "JSXAttribute[name.name='role'][value.value=/^(dialog|alertdialog)$/], JSXAttribute[name.name='aria-modal']",
+            message: DIALOG_MESSAGE,
+        },
         { selector: STATIC_STYLE, message: STATIC_STYLE_MESSAGE },
         {
             selector: `JSXOpeningElement[name.name=/^(${STATIC_ELEMENTS.join('|')})$/] > JSXAttribute[name.name='onClick']`,
@@ -57,6 +76,7 @@ export default {
                 forbid: [
                     { element: 'button', message: BUTTON_MESSAGE },
                     { element: 'input', message: INPUT_MESSAGE },
+                    { element: 'dialog', message: DIALOG_MESSAGE },
                 ],
             },
         ],

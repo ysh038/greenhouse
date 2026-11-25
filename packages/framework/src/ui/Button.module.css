@@ -67,3 +67,22 @@
     border-color: var(--gh-color-primary);
     background: var(--gh-color-selected);
 }
+
+.button[data-tone='danger'] {
+    color: var(--gh-color-danger);
+}
+
+.button[data-tone='danger']:hover:not(:disabled) {
+    border-color: var(--gh-color-danger);
+}
+
+.button[data-tone='danger'][data-variant='primary'] {
+    border-color: var(--gh-color-danger);
+    background: var(--gh-color-danger);
+    color: var(--gh-color-on-danger);
+}
+
+.button[data-tone='danger'][data-variant='primary']:hover:not(:disabled) {
+    border-color: var(--gh-color-danger-hover);
+    background: var(--gh-color-danger-hover);
+}

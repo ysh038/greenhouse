@@ -25,6 +25,11 @@ export type Target = (
 export type ShotOptions = {
     /** 주면 그 요소만 찍습니다. 안 주면 페이지 전체를 찍습니다. */
     of?: Target
+    /**
+     * 'viewport'를 주면 지금 화면에 보이는 영역만 찍습니다.
+     * 화면을 덮는 모달(Dialog, ConfirmDialog)은 이것으로 찍어야 뒤 화면과 함께 제자리에 나옵니다.
+     */
+    area?: 'page' | 'viewport'
 }
 
 /**

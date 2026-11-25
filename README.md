@@ -129,7 +129,7 @@ Opus가 화면 네 개까지 차례로 쌓는 범위에서는 이 프레임워�
 - **Effect 모듈 (완료)**: `useEventListener`, `useClickOutside`, `useKeydown`, `useTimeout`, `useInterval`, `useDebouncedValue`, `useAnimationFrame`. 제품 코드에서 `useEffect`, 타이머, `addEventListener`를 금지합니다. 크기 측정이나 스크롤 맞추기처럼 아직 훅이 없는 용도는 실전 시험에서 필요가 확인되면 추가합니다.
 - **데이터 모듈 (완료)**: `createApiClient`(응답 스키마 필수), `defineQuery`와 `useData`, `defineMutation`과 `useMutate`, `DataBoundary`, `DataProvider`. 제품 코드에서 `axios`, `fetch`, `@tanstack/react-query` 직접 사용을 금지합니다. 검색처럼 인자가 자주 바뀌는 조회는 `useDeferredData`를 씁니다. 조건부 조회, 무한 스크롤, 낙관적 갱신은 아직 없고 실전 시험에서 필요가 확인되면 추가합니다.
 - **가짜 서버와 테스트 도우미 (완료)**: `fake-api`의 `createFakeApi`(지연, 한 번 실패, 요청 기록)와 `testing`의 `renderWithData`, `advanceTime`, `connectFakeApi`(테스트 동안 `fetch`를 가짜 서버에 연결). 실전 시험에서 에이전트가 직접 만들어 쓰던 것을 프레임워크로 옮겼습니다.
-- **UI 모듈 (완료)**: 디자인 토큰(CSS 변수, 다크 모드 포함)과 `Button`, `TextField`(옆에 붙는 버튼은 `trailing`), `Checkbox`, `Stack`, `Card`, `Text`, `Page`, `ErrorNotice`. 제품 코드에서 생 `<button>`과 `<input>`, 고정 값 인라인 `style`, `div` 같은 요소의 `onClick`을 금지합니다. 실행 중에 정해지는 값은 `style`에 쓸 수 있습니다. 셀렉트, 라디오, 모달은 아직 없고 실전 시험에서 필요가 확인되면 추가합니다. 컴포넌트로 안 되는 고정 값은 제품 폴더의 CSS 모듈에 쓰고, 그 CSS는 stylelint로 검사합니다: 요소 선택자와 `*` 금지(컴포넌트 모양을 바깥에서 덮어쓰지 못하게), hex 색상 금지, 토큰과 같은 px 값 금지.
+- **UI 모듈 (완료)**: 디자인 토큰(CSS 변수, 다크 모드 포함)과 `Button`(되돌릴 수 없는 동작은 `tone="danger"`), `TextField`(옆에 붙는 버튼은 `trailing`), `Checkbox`, `Stack`, `Card`, `Text`, `Page`, `ErrorNotice`, `Dialog`(화면 위에 뜨는 창), `ConfirmDialog`(하기 전에 묻는 창). 제품 코드에서 생 `<button>`과 `<input>`, 고정 값 인라인 `style`, `div` 같은 요소의 `onClick`, 직접 만든 모달(`<dialog>`, `role="dialog"`, `aria-modal`, `window.confirm`)을 금지합니다. 실행 중에 정해지는 값은 `style`에 쓸 수 있습니다. 셀렉트와 라디오는 아직 없고 실전 시험에서 필요가 확인되면 추가합니다. 모달은 포커스 가두기, Escape와 바깥 클릭으로 닫기, 닫은 뒤 포커스 되돌리기를 처리합니다. 뒤 화면을 `inert`로 막거나 스크롤을 잠그지는 않습니다. 컴포넌트로 안 되는 고정 값은 제품 폴더의 CSS 모듈에 쓰고, 그 CSS는 stylelint로 검사합니다: 요소 선택자와 `*` 금지(컴포넌트 모양을 바깥에서 덮어쓰지 못하게), hex 색상 금지, 토큰과 같은 px 값 금지.
 - **구조 모듈**: 기능 폴더 규칙과 폴더 간 import 금지.
 
 모듈은 자기 폴더만 건드리므로 여러 세션이 동시에 작업할 수 있습니다.
@@ -138,7 +138,7 @@ Opus가 화면 네 개까지 차례로 쌓는 범위에서는 이 프레임워�
 
 - 검증 증거를 PR에 붙이는 장치(`pnpm verify:attach`)를 GitLab에서도 쓸 수 있게 할지. 지금은 GitHub만 됩니다. 비공개 저장소에서 그림이 권한 있는 사람에게 보이는지도 아직 확인하지 않았습니다(공개 저장소에서만 시험).
 - 스크린샷을 봐야 한다는 것은 검토 기록으로 강제합니다(4회차에서 에이전트는 24장 중 4장만 봤습니다). 다만 확인 코드는 모아 보기를 열었다는 것까지만 보장하고, 꼼꼼히 봤는지는 보장하지 못합니다. 이 장치가 결함을 실제로 더 잡는지는 시험해 보지 않았습니다.
-- 하나만 고르는 필터, 위험한 동작용 버튼 모양, 모달. 4회차에서 각각 한 번씩 필요가 관측됐습니다. 같이 관측된 가짜 서버 데이터 되돌리기는 테스트마다 가짜 서버를 새로 만드는 것으로 해결했습니다.
+- 하나만 고르는 필터. 4회차에서 한 번 필요가 관측됐습니다. 같이 관측된 위험한 동작용 버튼과 모달은 만들었습니다. 같이 관측된 가짜 서버 데이터 되돌리기는 테스트마다 가짜 서버를 새로 만드는 것으로 해결했습니다.
 
 - 샘플 앱 주제. 실제로 만드는 화면과 비슷할수록(목록, 상세, 폼, 로그인) 실전 시험이 쓸모 있습니다.
 - `pnpm deps:update`를 주기적으로 돌리는 장치(CI 예약 실행).

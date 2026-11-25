@@ -1,5 +1,6 @@
 import { Page } from '@agent-greenhouse/framework/ui'
 
+import { DialogDemo } from './demo/DialogDemo'
 import { MenuDemo } from './demo/MenuDemo'
 import { SearchDemo } from './demo/SearchDemo'
 import { InvitePanel } from './invites/InvitePanel'
@@ -18,6 +19,7 @@ export function App() {
             <NoticeBoard />
             <InvitePanel />
             <TaskSection />
+            <DialogDemo />
         </Page>
     )
 }

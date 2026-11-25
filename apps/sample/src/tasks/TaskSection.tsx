@@ -9,6 +9,7 @@ import {
     Button,
     Card,
     Checkbox,
+    ConfirmDialog,
     ErrorNotice,
     Stack,
     Text,
@@ -39,18 +40,12 @@ function RemainingCount() {
 
 function TaskRow({
     task,
-    isConfirming,
     onToggle,
     onAskDelete,
-    onCancelDelete,
-    onConfirmDelete,
 }: {
     task: Task
-    isConfirming: boolean
     onToggle: (isDone: boolean) => void
     onAskDelete: () => void
-    onCancelDelete: () => void
-    onConfirmDelete: () => void
 }) {
     return (
         <li>
@@ -61,70 +56,68 @@ function TaskRow({
                     isStruck={task.isDone}
                     onChange={onToggle}
                 />
-                <Button size="sm" onClick={onAskDelete}>
+                <Button size="sm" tone="danger" onClick={onAskDelete}>
                     삭제
                 </Button>
             </Stack>
-            {isConfirming && (
-                <Stack direction="row" gap="sm" wrap>
-                    <Text tone="danger">'{task.title}' 작업을 삭제할까요?</Text>
-                    <Button size="sm" variant="primary" onClick={onConfirmDelete}>
-                        삭제 확인
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={onCancelDelete}>
-                        취소
-                    </Button>
-                </Stack>
-            )}
         </li>
     )
 }
 
 function TaskList({ status }: { status: TaskStatus }) {
     const { data: tasks } = useDeferredData(taskListQuery(status))
-    const [confirmingId, setConfirmingId] = useState<number | null>(null)
+    const [deleteTarget, setDeleteTarget] = useState<Task | null>(null)
     const toggle = useMutate(setTaskDone)
     const remove = useMutate(deleteTask)
 
-    if (tasks.length === 0) {
-        return <Text tone="muted">작업이 없습니다</Text>
-    }
-
     return (
         <>
-            {(toggle.isError || remove.isError) && (
+            {toggle.isError && (
                 <Text role="alert" tone="danger">
                     변경하지 못했습니다
                 </Text>
             )}
-            <Stack as="ul" gap="sm" aria-label="작업 목록">
-                {tasks.map((task) => (
-                    <TaskRow
-                        key={task.id}
-                        task={task}
-                        isConfirming={task.id === confirmingId}
-                        onToggle={(isDone) => {
-                            toggle.mutate({ id: task.id, isDone })
-                        }}
-                        onAskDelete={() => {
-                            setConfirmingId(task.id)
-                        }}
-                        onCancelDelete={() => {
-                            setConfirmingId(null)
-                        }}
-                        onConfirmDelete={() => {
-                            remove.mutate(
-                                { id: task.id },
-                                {
-                                    onSuccess: () => {
-                                        setConfirmingId(null)
-                                    },
+            {tasks.length === 0 ? (
+                <Text tone="muted">작업이 없습니다</Text>
+            ) : (
+                <Stack as="ul" gap="sm" aria-label="작업 목록">
+                    {tasks.map((task) => (
+                        <TaskRow
+                            key={task.id}
+                            task={task}
+                            onToggle={(isDone) => {
+                                toggle.mutate({ id: task.id, isDone })
+                            }}
+                            onAskDelete={() => {
+                                remove.reset()
+                                setDeleteTarget(task)
+                            }}
+                        />
+                    ))}
+                </Stack>
+            )}
+            {deleteTarget && (
+                <ConfirmDialog
+                    message={`'${deleteTarget.title}' 작업을 삭제할까요?`}
+                    confirmLabel="삭제"
+                    tone="danger"
+                    isPending={remove.isPending}
+                    errorMessage={remove.isError ? '삭제하지 못했습니다' : undefined}
+                    onCancel={() => {
+                        setDeleteTarget(null)
+                    }}
+                    onConfirm={() => {
+                        remove.mutate(
+                            { id: deleteTarget.id },
+                            {
+                                onSuccess: () => {
+                                    setDeleteTarget(null)
                                 },
-                            )
-                        }}
-                    />
-                ))}
-            </Stack>
+                            },
+                        )
+                    }}
+                />
+            )}
         </>
     )
 }

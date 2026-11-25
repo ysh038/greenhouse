@@ -157,15 +157,17 @@ describe('삭제', () => {
         return within(item)
     }
 
-    it('삭제를 누르면 확인 문구가 나오고, 삭제 확인을 눌러야 지워진다', async () => {
+    it('삭제를 누르면 확인 창이 뜨고, 창의 삭제를 눌러야 지워진다', async () => {
         await renderSection()
 
         fireEvent.click(rowOf('모종 주문하기').getByRole('button', { name: '삭제' }))
 
-        expect(screen.getByText("'모종 주문하기' 작업을 삭제할까요?")).toBeDefined()
+        const dialog = screen.getByRole('alertdialog', {
+            name: "'모종 주문하기' 작업을 삭제할까요?",
+        })
         expect(taskLabels()).toHaveLength(4)
 
-        fireEvent.click(screen.getByRole('button', { name: '삭제 확인' }))
+        fireEvent.click(within(dialog).getByRole('button', { name: '삭제' }))
         await advanceTime(0)
 
         expect(taskLabels()).toEqual([
@@ -174,7 +176,7 @@ describe('삭제', () => {
             '온도계 달기',
         ])
         expect(screen.getByText('남은 작업 2개')).toBeDefined()
-        expect(screen.queryByText(/작업을 삭제할까요/)).toBeNull()
+        expect(screen.queryByRole('alertdialog')).toBeNull()
     })
 
     it('취소하면 그대로 남는다', async () => {
@@ -184,7 +186,7 @@ describe('삭제', () => {
         fireEvent.click(screen.getByRole('button', { name: '취소' }))
         await advanceTime(0)
 
-        expect(screen.queryByText(/작업을 삭제할까요/)).toBeNull()
+        expect(screen.queryByRole('alertdialog')).toBeNull()
         expect(taskLabels()).toHaveLength(4)
         expect(
             fakeApi.requests().filter((request) => request.method === 'DELETE'),

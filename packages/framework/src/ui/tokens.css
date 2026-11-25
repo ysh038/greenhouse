@@ -12,6 +12,9 @@
     --gh-color-selected: #e3f1e9;
     --gh-color-danger: #b3261e;
     --gh-color-danger-surface: #fbeceb;
+    --gh-color-danger-hover: #8f1d17;
+    --gh-color-on-danger: #ffffff;
+    --gh-color-backdrop: rgb(20 26 23 / 55%);
     --gh-color-success: #1f6f4a;
     --gh-color-focus: #2f8f62;
 
@@ -40,6 +43,7 @@
     --gh-control-height-sm: 28px;
     --gh-control-height-md: 36px;
     --gh-page-width: 720px;
+    --gh-dialog-width: 480px;
     --gh-duration-fast: 120ms;
 }
 
@@ -56,6 +60,9 @@
         --gh-color-selected: #20382c;
         --gh-color-danger: #f2857d;
         --gh-color-danger-surface: #3a1e1c;
+        --gh-color-danger-hover: #f6a29b;
+        --gh-color-on-danger: #2a0f0d;
+        --gh-color-backdrop: rgb(0 0 0 / 65%);
         --gh-color-success: #4fb886;
         --gh-color-focus: #66c797;
     }

@@ -1,11 +1,13 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { createRef } from 'react'
+import { createRef, useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
     Button,
     Card,
     Checkbox,
+    ConfirmDialog,
+    Dialog,
     ErrorNotice,
     Page,
     Stack,
@@ -308,5 +310,179 @@ describe('Page', () => {
         render(<Page title="샘플">내용</Page>)
 
         expect(within(screen.getByRole('main')).getByRole('heading', { level: 1 }).textContent).toBe('샘플')
+    })
+})
+
+describe('Button tone', () => {
+    it('danger를 주면 모양을 고르는 표시가 붙는다', () => {
+        render(<Button tone="danger">삭제</Button>)
+
+        expect(screen.getByRole('button', { name: '삭제' }).dataset.tone).toBe('danger')
+    })
+})
+
+function DialogHarness({ isDismissible = true }: { isDismissible?: boolean }) {
+    const [isOpen, setIsOpen] = useState(false)
+    return (
+        <>
+            <Button
+                onClick={() => {
+                    setIsOpen(true)
+                }}
+            >
+                열기
+            </Button>
+            {isOpen && (
+                <Dialog
+                    title="식물 상세"
+                    isDismissible={isDismissible}
+                    onClose={() => {
+                        setIsOpen(false)
+                    }}
+                >
+                    <TextField label="재고" value="3" onChange={() => undefined} />
+                    <Button variant="primary">저장</Button>
+                </Dialog>
+            )}
+        </>
+    )
+}
+
+function openDialog() {
+    const opener = screen.getByRole('button', { name: '열기' })
+    opener.focus()
+    fireEvent.click(opener)
+    return opener
+}
+
+describe('Dialog', () => {
+    it('제목을 이름으로 가진 모달 창을 띄운다', () => {
+        render(<DialogHarness />)
+        openDialog()
+
+        const dialog = screen.getByRole('dialog', { name: '식물 상세' })
+        expect(dialog.getAttribute('aria-modal')).toBe('true')
+        expect(within(dialog).getByRole('heading', { name: '식물 상세' })).toBeDefined()
+    })
+
+    it('열리면 포커스가 창 안으로 가고, 닫히면 열기 전 자리로 돌아온다', () => {
+        render(<DialogHarness />)
+        const opener = openDialog()
+
+        const dialog = screen.getByRole('dialog')
+        expect(dialog.contains(document.activeElement)).toBe(true)
+
+        fireEvent.click(within(dialog).getByRole('button', { name: '닫기' }))
+        expect(screen.queryByRole('dialog')).toBeNull()
+        expect(document.activeElement).toBe(opener)
+    })
+
+    it('Tab이 창 안에서만 돈다', () => {
+        render(<DialogHarness />)
+        openDialog()
+        const dialog = screen.getByRole('dialog')
+        const close = within(dialog).getByRole('button', { name: '닫기' })
+        const save = within(dialog).getByRole('button', { name: '저장' })
+
+        save.focus()
+        fireEvent.keyDown(save, { key: 'Tab' })
+        expect(document.activeElement).toBe(close)
+
+        fireEvent.keyDown(close, { key: 'Tab', shiftKey: true })
+        expect(document.activeElement).toBe(save)
+    })
+
+    it('Escape와 바깥 클릭으로 닫힌다', () => {
+        render(<DialogHarness />)
+        openDialog()
+        fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+        expect(screen.queryByRole('dialog')).toBeNull()
+
+        openDialog()
+        const backdrop = screen.getByRole('dialog').parentElement
+        expect(backdrop).not.toBeNull()
+        if (backdrop) fireEvent.mouseDown(backdrop)
+        expect(screen.queryByRole('dialog')).toBeNull()
+    })
+
+    it('창 안을 눌러서는 닫히지 않는다', () => {
+        render(<DialogHarness />)
+        openDialog()
+
+        fireEvent.mouseDown(screen.getByRole('dialog'))
+
+        expect(screen.getByRole('dialog')).toBeDefined()
+    })
+
+    it('isDismissible이 false이면 Escape, 바깥 클릭, 닫기 버튼으로 닫히지 않는다', () => {
+        render(<DialogHarness isDismissible={false} />)
+        openDialog()
+        const dialog = screen.getByRole('dialog')
+
+        fireEvent.keyDown(dialog, { key: 'Escape' })
+        if (dialog.parentElement) fireEvent.mouseDown(dialog.parentElement)
+        fireEvent.click(within(dialog).getByRole('button', { name: '닫기' }))
+
+        expect(screen.getByRole('dialog')).toBeDefined()
+    })
+})
+
+describe('ConfirmDialog', () => {
+    function renderConfirm(props: Partial<Parameters<typeof ConfirmDialog>[0]> = {}) {
+        const onConfirm = vi.fn<() => void>()
+        const onCancel = vi.fn<() => void>()
+        render(
+            <ConfirmDialog
+                message="이 글을 삭제할까요?"
+                confirmLabel="삭제"
+                tone="danger"
+                onConfirm={onConfirm}
+                onCancel={onCancel}
+                {...props}
+            />,
+        )
+        return { onConfirm, onCancel, dialog: screen.getByRole('alertdialog') }
+    }
+
+    it('묻는 문장을 이름으로 가지고, 열리면 포커스가 취소에 간다', () => {
+        const { dialog } = renderConfirm()
+
+        expect(screen.getByRole('alertdialog', { name: '이 글을 삭제할까요?' })).toBe(dialog)
+        expect(document.activeElement).toBe(
+            within(dialog).getByRole('button', { name: '취소' }),
+        )
+    })
+
+    it('확인과 취소를 각각 알린다', () => {
+        const { onConfirm, onCancel, dialog } = renderConfirm()
+
+        fireEvent.click(within(dialog).getByRole('button', { name: '삭제' }))
+        expect(onConfirm).toHaveBeenCalledTimes(1)
+
+        fireEvent.keyDown(dialog, { key: 'Escape' })
+        expect(onCancel).toHaveBeenCalledTimes(1)
+    })
+
+    it('tone이 danger이면 확인 버튼이 위험한 동작 모양이다', () => {
+        const { dialog } = renderConfirm()
+
+        const confirm = within(dialog).getByRole('button', { name: '삭제' })
+        expect(confirm.dataset.tone).toBe('danger')
+        expect(confirm.dataset.variant).toBe('primary')
+    })
+
+    it('요청하는 동안에는 두 버튼이 막히고 Escape로 닫히지 않는다', () => {
+        const { onCancel, dialog } = renderConfirm({ isPending: true })
+
+        expect(within(dialog).getByRole('button', { name: '삭제' })).toHaveProperty('disabled', true)
+        expect(within(dialog).getByRole('button', { name: '취소' })).toHaveProperty('disabled', true)
+        fireEvent.keyDown(dialog, { key: 'Escape' })
+        expect(onCancel).not.toHaveBeenCalled()
+    })
+
+    it('실패 문장을 창 안에 알린다', () => {
+        const { dialog } = renderConfirm({ errorMessage: '삭제하지 못했습니다' })
+
+        expect(within(dialog).getByRole('alert').textContent).toBe('삭제하지 못했습니다')
     })
 })
